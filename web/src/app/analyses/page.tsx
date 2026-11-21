@@ -25,10 +25,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { thumbnailUrl } from "@/features/gallery/lib/image-paths";
-import {
-  type AnalysisListItem,
-  getAnalysesPage,
-} from "@/shared/db/queries/analyses-list";
+import { getAnalysesPage } from "@/shared/db/queries/analyses-list";
 import {
   formatPestLabel,
   resolvePestDisplay,
@@ -131,7 +128,10 @@ export default async function AnalysesPage({
                   </TableHeader>
                   <TableBody>
                     {items.map((item) => {
-                      const displayPestType = resolvePestDisplay(item.pestType, item.pestTypeAi);
+                      const displayPestType = resolvePestDisplay(
+                        item.pestType,
+                        item.pestTypeAi,
+                      );
 
                       return (
                         <TableRow key={item.id}>
@@ -203,7 +203,10 @@ export default async function AnalysesPage({
 
             <div className="grid gap-4 md:hidden">
               {items.map((item) => {
-                const displayPestType = resolvePestDisplay(item.pestType, item.pestTypeAi);
+                const displayPestType = resolvePestDisplay(
+                  item.pestType,
+                  item.pestTypeAi,
+                );
 
                 return (
                   <Card key={item.id} size="sm">

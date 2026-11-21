@@ -7,13 +7,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { thumbnailUrl } from "@/features/gallery/lib/image-paths";
 import { cn } from "@/lib/utils";
+import type { GalleryItem } from "@/shared/db/queries/gallery";
 import {
   confidenceColor,
   formatConfidence,
   formatPestShort,
   resolvePestDisplay,
 } from "@/shared/lib/format";
-import type { GalleryItem } from "@/shared/db/queries/gallery";
 
 function severityColor(severity: string): string {
   switch (severity) {

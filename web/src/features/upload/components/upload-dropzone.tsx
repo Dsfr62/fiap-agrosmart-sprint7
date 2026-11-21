@@ -6,7 +6,13 @@ import {
   RiLoaderLine,
   RiUploadCloud2Line,
 } from "@remixicon/react";
-import { type ChangeEvent, type DragEvent, useCallback, useRef, useState } from "react";
+import {
+  type ChangeEvent,
+  type DragEvent,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -310,6 +316,18 @@ export function UploadDropzone() {
     [isSubmitting],
   );
 
+  // Teclado: Enter ou espaço na área de upload abre o seletor, como o clique.
+  const handleLabelKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLLabelElement>) => {
+      if (isSubmitting) return;
+      if (e.key !== "Enter" && e.key !== " ") return;
+      if ((e.target as HTMLElement).closest("button")) return;
+      e.preventDefault();
+      fileInputRef.current?.click();
+    },
+    [isSubmitting],
+  );
+
   const handleDrop = useCallback(
     (e: DragEvent<HTMLLabelElement>) => {
       e.preventDefault();
@@ -395,7 +413,9 @@ export function UploadDropzone() {
       <label
         aria-label="Área de upload de imagem"
         aria-disabled={isSubmitting}
+        tabIndex={isSubmitting ? -1 : 0}
         onClick={handleLabelClick}
+        onKeyDown={handleLabelKeyDown}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}

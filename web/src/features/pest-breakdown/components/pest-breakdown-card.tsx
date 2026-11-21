@@ -14,8 +14,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { PEST_TYPES, formatPestLabel } from "@/shared/lib/format";
 import type { PestBreakdownRow } from "@/shared/db/queries/pest-breakdown";
+import { formatPestLabel } from "@/shared/lib/format";
 
 const chartConfig = {
   count: { label: "Ocorrências" },

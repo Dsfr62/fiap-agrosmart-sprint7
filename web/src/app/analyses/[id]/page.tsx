@@ -29,7 +29,6 @@ import {
   confidenceColor,
   formatConfidence,
   formatPestLabel,
-  formatSeverityLabel,
   SEVERITY_COLORS,
 } from "@/shared/lib/format";
 
@@ -284,9 +283,7 @@ export default async function AnalysisDetailPage({
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex flex-wrap items-center gap-2">
-                    <Badge
-                      className={confidenceColor(row.pestTypeConfidence)}
-                    >
+                    <Badge className={confidenceColor(row.pestTypeConfidence)}>
                       {formatPestLabel(row.pestTypeAi)} •{" "}
                       {formatConfidence(row.pestTypeConfidence)}
                     </Badge>

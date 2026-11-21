@@ -81,9 +81,7 @@ export async function getReportData(): Promise<ReportData> {
   const dominantPestRaw = topPests.find(
     (item) => item.pestType !== "nao_identificado",
   )?.pestType;
-  const dominantPest = formatPestLabel(
-    dominantPestRaw ?? "nao_identificado",
-  );
+  const dominantPest = formatPestLabel(dominantPestRaw ?? "nao_identificado");
 
   const latestRecommendation = await db
     .select({

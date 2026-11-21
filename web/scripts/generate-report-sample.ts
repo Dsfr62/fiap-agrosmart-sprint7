@@ -32,7 +32,9 @@ async function main(): Promise<number> {
   const userPrompt = buildUserPrompt(context);
   const cacheKey = contextCacheKey(context, MODEL);
 
-  console.log(`Contexto: ${context.totals.analyses} análises, ${context.fields.length} talhões`);
+  console.log(
+    `Contexto: ${context.totals.analyses} análises, ${context.fields.length} talhões`,
+  );
   console.log(`Modelo: ${MODEL}`);
   console.log(`Chave de cache: ${cacheKey.slice(0, 16)}…\n`);
 
@@ -55,7 +57,9 @@ async function main(): Promise<number> {
   });
 
   if (!response.ok) {
-    console.error(`OpenRouter respondeu ${response.status}: ${await response.text()}`);
+    console.error(
+      `OpenRouter respondeu ${response.status}: ${await response.text()}`,
+    );
     return 1;
   }
 

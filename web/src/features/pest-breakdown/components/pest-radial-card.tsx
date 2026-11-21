@@ -16,14 +16,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { PEST_TYPES } from "@/shared/lib/format";
 import type { PestBreakdownRow } from "@/shared/db/queries/pest-breakdown";
+import { PEST_TYPES } from "@/shared/lib/format";
 
 const chartConfig = Object.fromEntries(
-  PEST_TYPES.map((p) => [
-    p.value,
-    { label: p.short, color: p.color },
-  ]),
+  PEST_TYPES.map((p) => [p.value, { label: p.short, color: p.color }]),
 ) satisfies ChartConfig;
 
 interface PestRadialCardProps {

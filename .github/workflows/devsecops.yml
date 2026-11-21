@@ -82,7 +82,10 @@ jobs:
         run: python -m pytest -q 2>&1 | tee ../teste-simulador.txt
       - name: A API de visão importa e responde ao /health
         working-directory: api
+        env:
+          AGROSMART_UPLOADS_DIR: ${{ runner.temp }}/uploads
         run: |
+          mkdir -p "$AGROSMART_UPLOADS_DIR"
           python - <<'EOF'
           from fastapi.testclient import TestClient
           from app.main import app

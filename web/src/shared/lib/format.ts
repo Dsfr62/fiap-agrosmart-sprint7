@@ -6,11 +6,31 @@
  */
 
 export const PEST_TYPES = [
-  { value: "nao_identificado", label: "Não identificado", short: "Não identif.", color: "var(--muted-foreground)" },
-  { value: "ferrugem", label: "Ferrugem", short: "Ferrugem", color: "var(--chart-1)" },
-  { value: "mancha_parda", label: "Mancha Parda", short: "Mancha parda", color: "var(--chart-2)" },
+  {
+    value: "nao_identificado",
+    label: "Não identificado",
+    short: "Não identif.",
+    color: "var(--muted-foreground)",
+  },
+  {
+    value: "ferrugem",
+    label: "Ferrugem",
+    short: "Ferrugem",
+    color: "var(--chart-1)",
+  },
+  {
+    value: "mancha_parda",
+    label: "Mancha Parda",
+    short: "Mancha parda",
+    color: "var(--chart-2)",
+  },
   { value: "oidio", label: "Oídio", short: "Oídio", color: "var(--chart-3)" },
-  { value: "lagarta", label: "Lagarta", short: "Lagarta", color: "var(--chart-4)" },
+  {
+    value: "lagarta",
+    label: "Lagarta",
+    short: "Lagarta",
+    color: "var(--chart-4)",
+  },
   { value: "outro", label: "Outro", short: "Outro", color: "var(--chart-5)" },
 ] as const;
 
@@ -37,10 +57,7 @@ export function formatPestShort(pestType: string | null | undefined): string {
 }
 
 /** Resolve display pest type: prefers manual, falls back to AI, then raw. */
-export function resolvePestDisplay(
-  manual: string,
-  ai: string | null,
-): string {
+export function resolvePestDisplay(manual: string, ai: string | null): string {
   if (manual !== "nao_identificado") return manual;
   if (ai && ai !== "nao_identificado") return ai;
   return manual;

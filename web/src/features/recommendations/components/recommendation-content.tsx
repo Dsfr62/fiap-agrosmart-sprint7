@@ -23,7 +23,6 @@ function parseBlocks(content: string): ReactNode[] {
   function flushList() {
     if (listItems.length === 0) return;
     const items = listItems.map((item, index) => (
-      // biome-ignore lint/suspicious/noArrayIndexKey: lista estática, sem reordenação
       <li key={index} className="ml-4">
         {renderInline(item)}
       </li>
@@ -99,13 +98,11 @@ function renderInline(text: string): ReactNode[] {
   return text.split(/(\*\*[^*]+\*\*)/g).map((part, index) => {
     if (part.startsWith("**") && part.endsWith("**")) {
       return (
-        // biome-ignore lint/suspicious/noArrayIndexKey: segmentos de uma linha estática
         <strong key={index} className="font-semibold">
           {part.slice(2, -2)}
         </strong>
       );
     }
-    // biome-ignore lint/suspicious/noArrayIndexKey: segmentos de uma linha estática
     return <span key={index}>{part}</span>;
   });
 }
