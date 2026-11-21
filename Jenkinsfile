@@ -68,7 +68,7 @@ pipeline {
           $TRIVY image --scanners vuln --format json --output relatorios/trivy-imagem-web.json agrosmart-web:local
           $TRIVY image --scanners vuln --format json --output relatorios/trivy-imagem-api.json agrosmart-api:local
           $TRIVY config --format json --output relatorios/trivy-config.json .
-          python3 devsecops/trivy_resumo.py relatorios/trivy-*.json
+          python3 devsecops/trivy_resumo.py --bloquear CRITICAL relatorios/trivy-*.json
         '''
       }
     }

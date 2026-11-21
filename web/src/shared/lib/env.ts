@@ -5,6 +5,7 @@ export const env = {
   UPLOAD_AUDIT_SALT: process.env.UPLOAD_AUDIT_SALT ?? "dev-salt",
   AGROSMART_PUBLIC_ORIGIN:
     process.env.AGROSMART_PUBLIC_ORIGIN ?? "http://localhost:3000",
+  MQTT_URL: process.env.MQTT_URL ?? "mqtt://localhost:1883",
   OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY ?? "",
   OPENROUTER_BASE_URL:
     process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1",

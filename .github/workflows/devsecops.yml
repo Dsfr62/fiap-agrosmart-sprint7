@@ -166,7 +166,8 @@ jobs:
           $TRIVY image --scanners vuln --format json --output relatorios/trivy-imagem-api.json agrosmart-api:local
           $TRIVY config --format json --output relatorios/trivy-config.json .
       - name: Resultado da análise
-        run: python3 devsecops/trivy_resumo.py relatorios/trivy-*.json | tee -a "$GITHUB_STEP_SUMMARY"
+        # Portão: para se houver vulnerabilidade CRITICAL com correção publicada.
+        run: python3 devsecops/trivy_resumo.py --bloquear CRITICAL relatorios/trivy-*.json | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Guardar os relatórios
         if: always()
         uses: actions/upload-artifact@v4
@@ -231,12 +232,67 @@ jobs:
           done
       - name: Entrada virou saída?
         run: python3 devsecops/execucao_resumo.py data/agrosmart.db --min-leituras 100 --min-decisoes 10 | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: App web no ar (build de produção e servidor)
+        working-directory: web
+        env:
+          PORT: "3000"
+          HOSTNAME: 127.0.0.1
+        run: |
+          bun run build > ../data/logs/web-build.log 2>&1 || { tail -40 ../data/logs/web-build.log; exit 1; }
+          cp -r .next/static .next/standalone/.next/static
+          cp -r public .next/standalone/public
+          nohup node .next/standalone/server.js > ../data/logs/web.log 2>&1 &
+          for _ in $(seq 1 30); do
+            curl -sf -o /dev/null http://127.0.0.1:3000/api/health && break
+            sleep 1
+          done
+          curl -sf -o /dev/null http://127.0.0.1:3000/api/health
+      - name: Monitoramento (/api/health, /api/metrics e o log do worker)
+        run: |
+          mkdir -p relatorios
+          curl -s http://127.0.0.1:3000/api/health | python3 -m json.tool > relatorios/health.json
+          curl -s http://127.0.0.1:3000/api/metrics | python3 -m json.tool > relatorios/metrics.json
+          {
+            echo "### Monitoramento"
+            echo ""
+            echo "**GET /api/health**"
+            echo '```json'
+            cat relatorios/health.json
+            echo '```'
+            echo "**GET /api/metrics**"
+            echo '```json'
+            cat relatorios/metrics.json
+            echo '```'
+            echo "**Log do worker (linhas [monitor])**"
+            echo '```'
+            grep "\[monitor\]" data/logs/worker.log | tail -5 || echo "nenhuma linha [monitor] ainda"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          python3 -c "import json; h = json.load(open('relatorios/health.json')); print('status:', h['status']); assert h['status'] != 'fora'"
+      - name: Prints das telas (Chrome sem janela)
+        run: |
+          mkdir -p relatorios/prints
+          for pagina in ambiente ambiente/decisoes ambiente/leituras monitoramento arquitetura; do
+            nome=$(echo "$pagina" | tr '/' '-')
+            google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
+              --window-size=1440,1100 --virtual-time-budget=8000 \
+              --screenshot="relatorios/prints/$nome.png" "http://127.0.0.1:3000/$pagina" > /dev/null 2>&1
+          done
+          ls -la relatorios/prints
+          test -s relatorios/prints/monitoramento.png
+      - name: Event log e análise do processo (pm4py)
+        run: |
+          sudo apt-get update -q > /dev/null && sudo apt-get install -y -q graphviz > /dev/null
+          pip install -q -r processo/requirements.txt
+          python processo/exportar_event_log.py data/event-log.jsonl --saida relatorios/processo
+          python processo/analisar_processo.py relatorios/processo/event-log.csv --saida relatorios/processo \
+            | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Guardar logs e banco da execução
         if: always()
         run: |
           mkdir -p relatorios
           cp data/logs/*.log relatorios/ 2>/dev/null || true
-          cp data/agrosmart.db relatorios/ 2>/dev/null || true
+          cp data/agrosmart.db data/event-log.jsonl data/worker-status.json relatorios/ 2>/dev/null || true
           docker compose -f docker-compose.yml -f docker-compose.dev.yml logs mosquitto > relatorios/mosquitto.log 2>&1 || true
       - uses: actions/upload-artifact@v4
         if: always()

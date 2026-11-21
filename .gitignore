@@ -29,3 +29,7 @@ simulator/__pycache__
 
 # Zip de entrega (gerado por scripts/package-delivery.sh)
 entrega/
+
+# Análise de processo (gerada por processo/*.py)
+processo/saida/
+processo/__pycache__

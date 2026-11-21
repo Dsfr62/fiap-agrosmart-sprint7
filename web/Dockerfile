@@ -26,7 +26,12 @@ FROM base AS runner
 ENV NODE_ENV=production \
   PORT=3000 \
   HOSTNAME=0.0.0.0
-RUN mkdir -p /data && chown node:node /data
+# Correções de segurança do Debian e, fora da imagem final, o npm, o npx e o corepack:
+# o app só precisa do node para rodar, e o npm traz bibliotecas com vulnerabilidade (Trivy).
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+    /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack \
+  && mkdir -p /data && chown node:node /data
 COPY --from=builder --chown=node:node /app/public ./public
 COPY --from=builder --chown=node:node /app/.next/standalone ./
 COPY --from=builder --chown=node:node /app/.next/static ./.next/static

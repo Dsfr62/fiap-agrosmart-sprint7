@@ -84,11 +84,26 @@ def main() -> int:
         "/api/issues/search", componentKeys=project, ps="1", facets="severities,types"
     )
     facets = {f["property"]: {v["val"]: v["count"] for v in f["values"]} for f in issues["facets"]}
+    bugs = get(
+        "/api/issues/search",
+        componentKeys=project,
+        types="BUG,VULNERABILITY",
+        resolved="false",
+        ps="100",
+    )["issues"]
+    hotspots = get("/api/hotspots/search", projectKey=project, ps="100").get("hotspots", [])
 
     OUT.parent.mkdir(exist_ok=True)
     OUT.write_text(
         json.dumps(
-            {"projeto": project, "quality_gate": gate, "metricas": values, "issues": facets},
+            {
+                "projeto": project,
+                "quality_gate": gate,
+                "metricas": values,
+                "issues": facets,
+                "bugs_e_vulnerabilidades": bugs,
+                "pontos_sensiveis": hotspots,
+            },
             ensure_ascii=False,
             indent=2,
         )
@@ -111,6 +126,20 @@ def main() -> int:
     for severity, count in sorted(facets.get("severities", {}).items()):
         print(f"| {severity} | {count} |")
     print()
+    if bugs:
+        print("| Bug ou vulnerabilidade | Onde | Regra |")
+        print("|---|---|---|")
+        for issue in bugs:
+            where = issue["component"].split(":", 1)[-1]
+            print(f"| {issue['message']} | `{where}:{issue.get('line', '')}` | {issue['rule']} |")
+        print()
+    if hotspots:
+        print("| Ponto sensível de segurança | Onde | Categoria |")
+        print("|---|---|---|")
+        for spot in hotspots:
+            where = spot["component"].split(":", 1)[-1]
+            print(f"| {spot['message']} | `{where}:{spot.get('line', '')}` | {spot.get('securityCategory', '')} |")
+        print()
     return 0
 
 

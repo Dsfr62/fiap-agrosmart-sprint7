@@ -6,6 +6,7 @@ import {
   RiLeafLine,
   RiListCheck3,
   RiNodeTree,
+  RiPulseLine,
   RiSensorLine,
   RiSideBarLine,
   RiUploadCloudLine,
@@ -38,6 +39,11 @@ const data = {
       title: "Ambiente",
       url: "/ambiente",
       icon: <RiSensorLine />,
+    },
+    {
+      title: "Monitoramento",
+      url: "/monitoramento",
+      icon: <RiPulseLine />,
     },
     {
       title: "Upload",

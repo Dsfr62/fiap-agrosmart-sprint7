@@ -7,6 +7,7 @@ services:
       - DB_PATH=/data/agrosmart.db
       - UPLOADS_DIR=/data/uploads
       - API_BASE_URL=http://api:8000
+      - MQTT_URL=mqtt://mosquitto:1883
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - UPLOAD_AUDIT_SALT=${UPLOAD_AUDIT_SALT}
       - AGROSMART_PUBLIC_ORIGIN=${AGROSMART_PUBLIC_ORIGIN}
@@ -48,6 +49,12 @@ services:
     image: eclipse-mosquitto:2.0.20
     volumes:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    # Monitoramento: o broker só conta como saudável se responder a uma assinatura.
+    healthcheck:
+      test: ["CMD", "mosquitto_sub", "-t", "$$SYS/broker/version", "-C", "1", "-W", "5"]
+      interval: 15s
+      timeout: 8s
+      retries: 3
     networks: [internal]
     stop_grace_period: 10s
 
