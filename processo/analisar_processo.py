@@ -151,7 +151,7 @@ def main() -> int:
         )
     lines += ["", "**Variantes (os caminhos mais comuns)**", "", "| Casos | % | Mediana do caso | Caminho |", "|---:|---:|---:|---|"]
     for variant, row in var.head(10).iterrows():
-        lines.append(f"| {row['casos']} | {row['percentual']:.1f}% | {ms(row['mediana_ms'])} | {variant} |")
+        lines.append(f"| {int(row['casos'])} | {row['percentual']:.1f}% | {ms(row['mediana_ms'])} | {variant} |")
     lines += ["", "**Esperas entre atividades (as maiores médias primeiro)**", "", "| De | Para | Vezes | Média | Mediana | p95 | Máxima |", "|---|---|---:|---:|---:|---:|---:|"]
     for (origin, target), row in trans.head(10).iterrows():
         lines.append(

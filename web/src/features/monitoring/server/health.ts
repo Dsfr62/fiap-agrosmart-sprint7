@@ -139,7 +139,7 @@ const lastTimestamp = (sql: string): number | null => {
 };
 
 const checkFreshness = (
-  label: string,
+  label: { last: string; none: string },
   lastMs: number | null,
   okSeconds: number,
   now: number,
@@ -148,12 +148,12 @@ const checkFreshness = (
   if (age === null)
     return {
       estado: "atencao",
-      detalhe: `nenhum(a) ${label} ainda`,
+      detalhe: label.none,
       idadeSegundos: null,
     };
   return {
     estado: age <= okSeconds ? "ok" : "atencao",
-    detalhe: `último(a) ${label} ${formatAge(age)}`,
+    detalhe: `${label.last} ${formatAge(age)}`,
     idadeSegundos: age,
   };
 };
@@ -167,13 +167,16 @@ export const getHealth = async (): Promise<HealthReport> => {
   let decisoes: ComponentCheck = { estado: "fora", detalhe: "banco fora" };
   if (banco.estado !== "fora") {
     leituras = checkFreshness(
-      "leitura recebida",
+      {
+        last: "última leitura recebida",
+        none: "nenhuma leitura recebida ainda",
+      },
       lastTimestamp("SELECT MAX(received_at) AS ultimo FROM sensor_readings"),
       READINGS_OK_S,
       now,
     );
     decisoes = checkFreshness(
-      "decisão da automação",
+      { last: "última decisão", none: "nenhuma decisão ainda" },
       lastTimestamp("SELECT MAX(created_at) AS ultimo FROM risk_evaluations"),
       DECISIONS_OK_S,
       now,

@@ -81,8 +81,8 @@ function ComponentRow({
         className={`mt-1.5 size-2.5 shrink-0 rounded-full ${style.dot}`}
       />
       <div className="min-w-0 flex-1">
-        <p className="font-semibold text-agro-ink">{name}</p>
-        <p className="text-sm text-agro-ink-2">
+        <p className="font-semibold leading-6 text-agro-ink">{name}</p>
+        <p className="mt-0.5 text-sm leading-5 text-agro-ink-2">
           {check.detalhe}
           {check.latenciaMs !== undefined ? ` · ${check.latenciaMs} ms` : ""}
         </p>
@@ -146,7 +146,7 @@ export default async function MonitoringPage() {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2
               id="estado-geral"
-              className="flex items-center gap-2 text-lg font-bold text-agro-ink"
+              className="flex items-center gap-2 border-0 pb-0 text-lg font-bold tracking-normal text-agro-ink"
             >
               <span
                 aria-hidden
@@ -154,7 +154,7 @@ export default async function MonitoringPage() {
               />
               {overall.label}
             </h2>
-            <p className="text-xs text-agro-ink-3">
+            <p className="mt-0 text-xs text-agro-ink-3">
               Verificado em {formatTime(health.verificadoEm)} · versão{" "}
               {health.versao}
             </p>
@@ -189,7 +189,10 @@ export default async function MonitoringPage() {
 
         <div className="grid gap-5 lg:grid-cols-2">
           <section className={card} aria-labelledby="por-acao">
-            <h2 id="por-acao" className="font-bold text-agro-ink">
+            <h2
+              id="por-acao"
+              className="border-0 pb-0 text-lg font-bold tracking-normal text-agro-ink"
+            >
               Decisões por ação
             </h2>
             <table className="mt-2 w-full text-sm">
@@ -211,7 +214,10 @@ export default async function MonitoringPage() {
           </section>
 
           <section className={card} aria-labelledby="por-talhao">
-            <h2 id="por-talhao" className="font-bold text-agro-ink">
+            <h2
+              id="por-talhao"
+              className="border-0 pb-0 text-lg font-bold tracking-normal text-agro-ink"
+            >
               Leituras por talhão
             </h2>
             <table className="mt-2 w-full text-sm">
@@ -233,7 +239,10 @@ export default async function MonitoringPage() {
         </div>
 
         <section className={card} aria-labelledby="eventos">
-          <h2 id="eventos" className="font-bold text-agro-ink">
+          <h2
+            id="eventos"
+            className="border-0 pb-0 text-lg font-bold tracking-normal text-agro-ink"
+          >
             Últimos eventos do processo
           </h2>
           <p className="mt-1 text-sm text-agro-ink-2">
@@ -281,7 +290,10 @@ export default async function MonitoringPage() {
         </section>
 
         <section className={card} aria-labelledby="como-acompanhar">
-          <h2 id="como-acompanhar" className="font-bold text-agro-ink">
+          <h2
+            id="como-acompanhar"
+            className="border-0 pb-0 text-lg font-bold tracking-normal text-agro-ink"
+          >
             Como acompanhar o sistema
           </h2>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-agro-ink-2">
