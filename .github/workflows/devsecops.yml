@@ -211,11 +211,14 @@ jobs:
           done
           cat ../data/logs/worker.log
           grep -q "assinando" ../data/logs/worker.log
-      - name: Simulador (48 h de histórico, cenário misto, semente fixa)
+      # O worker só grava o histórico (backfill); decisão sai das leituras ao vivo.
+      # 24 h de histórico + 48 leituras ao vivo por estação (12 h simuladas, 1 s real a cada 15 min).
+      - name: Simulador (24 h de histórico e 12 h ao vivo, cenário misto, semente fixa)
         run: |
           pip install -q -r simulator/requirements.txt
-          python simulator/simulator.py --backfill-hours 48 --count 0 --scenario misto --seed 2026 \
-            | tee data/logs/simulator.log
+          python simulator/simulator.py --backfill-hours 24 --count 48 --speed 900 --scenario misto --seed 2026 \
+            > data/logs/simulator.log
+          head -3 data/logs/simulator.log; tail -9 data/logs/simulator.log
       - name: Esperar o worker terminar de gravar
         run: |
           ANTES=-1

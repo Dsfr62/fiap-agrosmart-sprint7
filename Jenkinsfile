@@ -83,7 +83,7 @@ pipeline {
           sleep 10
           cd ..
           . .venv-ci/bin/activate
-          python simulator/simulator.py --backfill-hours 48 --count 0 --scenario misto --seed 2026
+          python simulator/simulator.py --backfill-hours 24 --count 48 --speed 900 --scenario misto --seed 2026
           sleep 30
           python3 devsecops/execucao_resumo.py data/agrosmart.db --min-leituras 100 --min-decisoes 10
         '''

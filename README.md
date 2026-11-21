@@ -48,7 +48,7 @@ A cada push na `main`, o GitHub Actions roda cinco etapas, na ordem que o capít
 2. **Testes do Python:** simulador de sensores e API de visão.
 3. **Qualidade do código:** o SonarQube sobe num container dentro do pipeline e analisa o código com o `sonar-scanner`.
 4. **Containers e vulnerabilidades:** as imagens Docker da web e da API são montadas e o **Trivy** procura vulnerabilidades nelas e erros de configuração nos Dockerfiles.
-5. **Execução ponta a ponta:** sobe o broker MQTT, o banco e o worker, roda o simulador com 48 horas de histórico e confere que as leituras viraram decisões.
+5. **Execução ponta a ponta:** sobe o broker MQTT, o banco e o worker, roda o simulador com 24 horas de histórico e 12 horas ao vivo (aceleradas) e confere que as leituras viraram decisões.
 
 O mesmo pipeline está no [`Jenkinsfile`](Jenkinsfile), para quem quiser rodar no Jenkins do laboratório (`devsecops/docker-compose.yml`). Detalhe em [`docs/fase-7/03-pipeline.md`](docs/fase-7/03-pipeline.md).
 

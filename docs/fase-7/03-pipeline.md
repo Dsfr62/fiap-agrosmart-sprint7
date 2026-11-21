@@ -16,7 +16,7 @@ O pipeline roda sozinho a cada push na `main` do GitHub e faz, em ordem, o que o
 | 2. Testes do Python | testa o simulador de sensores e confere que a API de visão sobe e responde ao `/health` | pytest, FastAPI | teste vermelho ou API que não sobe |
 | 3. Qualidade do código | sobe o SonarQube num container dentro do próprio pipeline, analisa web, worker, API e simulador e publica o Quality Gate e as métricas | SonarQube, sonar-scanner | a análise não terminar |
 | 4. Containers e vulnerabilidades | monta as imagens Docker da web e da API (build em etapas) e passa o Trivy nas duas e nos Dockerfiles | Docker Compose, Trivy | imagem que não monta |
-| 5. Execução ponta a ponta | sobe o broker MQTT, o banco e o worker; o simulador publica 48 horas de leituras; confere que viraram decisões | Mosquitto, Node.js, Python | menos de 100 leituras ou de 10 decisões |
+| 5. Execução ponta a ponta | sobe o broker MQTT, o banco e o worker; o simulador publica 24 horas de histórico e 12 horas ao vivo, aceleradas; confere que as leituras viraram decisões (o histórico só é gravado; a decisão sai das leituras ao vivo, como no campo) | Mosquitto, Node.js, Python | menos de 100 leituras ou de 10 decisões |
 
 As etapas 1 e 2 correm em paralelo; a 4 só começa se as duas passarem.
 
