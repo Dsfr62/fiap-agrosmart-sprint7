@@ -1,0 +1,33 @@
+{
+    "status": "ok",
+    "versao": "fase-7",
+    "verificadoEm": "2026-11-21T23:48:56.789Z",
+    "noArSegundos": 1,
+    "componentes": {
+        "banco": {
+            "estado": "ok",
+            "detalhe": "SQLite respondendo",
+            "latenciaMs": 0
+        },
+        "broker": {
+            "estado": "ok",
+            "detalhe": "Mosquitto atendendo em localhost:1883",
+            "latenciaMs": 1
+        },
+        "worker": {
+            "estado": "ok",
+            "detalhe": "\u00faltimo sinal h\u00e1 4 s, conectado ao broker, fila de 0 avalia\u00e7\u00e3o(\u00f5es)",
+            "idadeSegundos": 4
+        },
+        "leituras": {
+            "estado": "ok",
+            "detalhe": "\u00faltima leitura recebida h\u00e1 24 s",
+            "idadeSegundos": 24
+        },
+        "decisoes": {
+            "estado": "ok",
+            "detalhe": "\u00faltima decis\u00e3o h\u00e1 25 s",
+            "idadeSegundos": 25
+        }
+    }
+}

@@ -1,0 +1,74 @@
+{
+    "geradoEm": "2026-11-21T23:48:56.873Z",
+    "leituras": {
+        "total": 1008,
+        "ultimaHora": 1008,
+        "ultimas24h": 1008,
+        "porTalhao": [
+            {
+                "talhao": "Fazenda Alfa / Talh\u00e3o 1",
+                "total": 144,
+                "ultimaRecebida": "2026-11-21T23:48:33.200Z"
+            },
+            {
+                "talhao": "Fazenda Alfa / Talh\u00e3o 2",
+                "total": 144,
+                "ultimaRecebida": "2026-11-21T23:48:33.201Z"
+            },
+            {
+                "talhao": "Fazenda Alfa / Talh\u00e3o 3",
+                "total": 144,
+                "ultimaRecebida": "2026-11-21T23:48:33.201Z"
+            },
+            {
+                "talhao": "Fazenda Beta / Talh\u00e3o 1",
+                "total": 144,
+                "ultimaRecebida": "2026-11-21T23:48:33.201Z"
+            },
+            {
+                "talhao": "Fazenda Beta / Talh\u00e3o 2",
+                "total": 144,
+                "ultimaRecebida": "2026-11-21T23:48:33.202Z"
+            },
+            {
+                "talhao": "Fazenda Gama / Talh\u00e3o 1",
+                "total": 144,
+                "ultimaRecebida": "2026-11-21T23:48:33.202Z"
+            },
+            {
+                "talhao": "Fazenda Gama / Talh\u00e3o 2",
+                "total": 144,
+                "ultimaRecebida": "2026-11-21T23:48:33.202Z"
+            }
+        ]
+    },
+    "decisoes": {
+        "total": 84,
+        "ultimas24h": 84,
+        "porAcao": {
+            "irrigate": 24,
+            "none": 24,
+            "notify": 24,
+            "suggest_agronomist": 12
+        },
+        "porQuemDecidiu": {
+            "rule": 84
+        },
+        "taxaPlanoB": 100,
+        "alertas": 60,
+        "recomendacoesIA": 0,
+        "custoJevUsd": 0
+    },
+    "worker": {
+        "mensagens": 1008,
+        "gravadas": 1008,
+        "repetidas": 0,
+        "descartadas": 0,
+        "avaliacoes": 84,
+        "avaliacoesIgnoradas": 0,
+        "erros": 0,
+        "fila": 0,
+        "duracaoMediaAvaliacaoMs": 33,
+        "iniciadoEm": "2026-11-21T23:47:42.922Z"
+    }
+}

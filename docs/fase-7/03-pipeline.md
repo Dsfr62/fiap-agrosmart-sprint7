@@ -33,23 +33,31 @@ Na aba **Actions** do repositório, execução "DevSecOps". O **Summary** de cad
 
 ## Resultado medido (21/11/2026)
 
-Execução verde nas cinco etapas: https://github.com/Dsfr62/fiap-agrosmart-sprint7/actions/runs/44932288058
+Execução verde nas cinco etapas: https://github.com/Dsfr62/fiap-agrosmart-sprint7/actions/runs/44963438354
 
-**Qualidade (SonarQube):** Quality Gate **OK**; 12.272 linhas analisadas; 0 vulnerabilidades; 4 bugs (nota C de confiabilidade); 4 pontos sensíveis de segurança; 87 code smells; 4,7% de linhas duplicadas; nota A de segurança e de manutenibilidade.
+**Qualidade (SonarQube):** Quality Gate **OK**; 13.247 linhas analisadas; **0 bugs e 0 vulnerabilidades**; nota **A** de confiabilidade, segurança e manutenibilidade; 87 code smells; 4,4% de linhas duplicadas; 4 pontos sensíveis de segurança para revisar (expressões regulares que podem ficar lentas com texto malicioso).
 
-**Vulnerabilidades (Trivy):**
+**Vulnerabilidades (Trivy), antes e depois:**
 
-| Alvo | CRITICAL | HIGH | Com correção (CRITICAL/HIGH) |
-|---|---:|---:|---:|
-| Imagem da API (`agrosmart-api`, 866 MB) | 6 | 108 | 5/44 |
-| Imagem da web (`agrosmart-web`, 425 MB) | 6 | 63 | 5/26 |
-| Dockerfiles (configuração) | 0 falhas | | |
+| Alvo | CRITICAL antes | CRITICAL depois | CRITICAL com correção depois | HIGH com correção depois |
+|---|---:|---:|---:|---:|
+| Imagem da API (`agrosmart-api`) | 6 | 1 | **0** | 3 |
+| Imagem da web (`agrosmart-web`) | 6 | 1 | **0** | **0** |
+| Dockerfiles (configuração) | 0 falhas | 0 falhas | | |
 
-**Execução ponta a ponta:** 1.008 leituras de 7 talhões (24 h de histórico e 12 h ao vivo) viraram **84 decisões**: 33 avisos, 24 irrigações, 7 chamadas ao agrônomo e 20 sem ação. Sem a chave da OpenRouter no pipeline, todas saíram pelas regras de limiar (plano B).
+O **portão** da etapa 4 para o pipeline se aparecer vulnerabilidade CRITICAL que já tenha correção publicada. A CRITICAL que sobra em cada imagem é do sistema Debian (libxml2 e zlib) e ainda não tem correção. Os 3 HIGH com correção que sobram na API são do Starlette, que só sai com uma versão nova do FastAPI.
 
-**O que o pipeline achou e foi corrigido na primeira semana:**
-- 15 erros de lint no código herdado (formatação, imports sem uso, supressões que não suprimiam nada e a área de upload sem acesso pelo teclado).
-- A imagem Docker da web da Sprint 6 nunca montava: o `better-sqlite3` precisa de compilador e a base Bun Alpine não tem. A imagem passou para Node 22 Debian, roda sem root e ganhou healthcheck.
-- A execução mostrou que o worker só decide nas leituras ao vivo (o histórico só é gravado), e o ensaio passou a publicar as duas.
+**Execução ponta a ponta:** 1.008 leituras de 7 talhões (24 h de histórico e 12 h ao vivo) viraram **84 decisões** (24 avisos, 24 irrigações, 12 chamadas ao agrônomo, 24 sem ação). Sem a chave da OpenRouter no pipeline, todas saíram pelas regras de limiar (plano B). O app de produção subiu, o `/api/health` respondeu **ok** nos cinco componentes ([health.json](health.json), [metrics.json](metrics.json)) e as telas foram fotografadas ([prints](prints/)).
 
-**O que fica em aberto:** os 4 bugs do SonarQube e a regra do portão do Trivy (bloquear CRITICAL com correção publicada), depois de atualizar as imagens de base.
+**O que o pipeline achou e foi corrigido:**
+
+| Achado | Etapa | Correção |
+|---|---|---|
+| 15 erros de lint no código herdado (formatação, imports sem uso, supressões inúteis, área de upload sem teclado) | 1 | corrigidos; a área de upload abre com Enter e espaço |
+| A imagem Docker da web da Sprint 6 nunca montava (o `better-sqlite3` precisa de compilador, e a base Bun Alpine não tem) | 4 | imagem em Node 22 Debian, sem root, com healthcheck |
+| O worker só decide nas leituras ao vivo (o histórico só é gravado) | 5 | o ensaio publica 24 h de histórico e 12 h ao vivo |
+| 10 vulnerabilidades CRITICAL com correção (Pillow 11.2.1 e Next.js 16.2.4) | 4 | Pillow 13.0.0 e Next.js 16.4.6; atualização do Debian; npm fora da imagem final |
+| HIGH com correção no python-multipart e no sharp | 4 | python-multipart 0.0.30 e sharp 0.35.5 |
+| 3 "bugs" de CSS que eram falso positivo (a regra não conhece o `@theme` e o `@custom-variant` do Tailwind 4) | 3 | exceção só dessa regra e só no `globals.css`, com o motivo no `sonar-project.properties` |
+
+**O que fica em aberto:** os 3 HIGH do Starlette (pedem atualizar o FastAPI e testar a API de visão) e a revisão dos 4 pontos sensíveis de segurança.
