@@ -18,7 +18,9 @@ RUN bun install --frozen-lockfile --ignore-scripts \
 
 FROM deps AS builder
 COPY . .
-RUN ./node_modules/.bin/next build
+# O cliente do banco abre o SQLite ao carregar; no build, um banco descartável.
+RUN mkdir -p /tmp/build-data \
+  && DB_PATH=/tmp/build-data/build.db ./node_modules/.bin/next build
 
 FROM base AS runner
 ENV NODE_ENV=production \
