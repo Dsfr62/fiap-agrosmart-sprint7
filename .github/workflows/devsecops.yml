@@ -1,0 +1,239 @@
+# Pipeline DevSecOps do AgroSmart (Sprint 7, fase 7).
+# A cada push na main: build e testes, qualidade do código (SonarQube), imagens Docker,
+# vulnerabilidades (Trivy) e a execução ponta a ponta da plataforma.
+# Os mesmos estágios estão no Jenkinsfile da raiz (o capítulo 10 ensina com Jenkins).
+name: DevSecOps
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# shell: bash = bash -eo pipefail: um comando que falha antes de um "| tee" derruba o passo.
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: devsecops-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BUN_VERSION: "1.2.21"
+  NODE_VERSION: "22"
+  PYTHON_VERSION: "3.12"
+  TRIVY_IMAGE: aquasec/trivy:0.62.1
+  SONARQUBE_IMAGE: sonarqube:10.6.0-community
+  SCANNER_IMAGE: sonarsource/sonar-scanner-cli:5.0.1
+
+jobs:
+  build-web:
+    name: 1. Build e testes do app web
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Instalar dependências (lockfile congelado)
+        run: bun install --frozen-lockfile
+      - name: Lint (Biome)
+        run: bun run lint
+      - name: Tipos (TypeScript)
+        run: ./node_modules/.bin/tsc --noEmit
+      - name: Testes da automação (agregação, regras e leitura dos sensores)
+        run: bun run test:telemetry 2>&1 | tee ../teste-telemetria.txt
+      - name: Build de produção (next build)
+        run: bun run build
+      - name: Resumo
+        if: always()
+        working-directory: .
+        run: |
+          {
+            echo "### 1. Build e testes do app web"
+            echo '```'
+            grep -E "^# (tests|pass|fail)" teste-telemetria.txt || echo "sem saída de teste"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  testes-python:
+    name: 2. Testes do Python (simulador e API de visão)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Instalar dependências
+        run: pip install -r simulator/requirements.txt -r api/requirements.txt pytest httpx
+      - name: Testes do simulador (pytest)
+        working-directory: simulator
+        run: python -m pytest -q 2>&1 | tee ../teste-simulador.txt
+      - name: A API de visão importa e responde ao /health
+        working-directory: api
+        run: |
+          python - <<'EOF'
+          from fastapi.testclient import TestClient
+          from app.main import app
+          resposta = TestClient(app).get("/health")
+          print(resposta.status_code, resposta.json())
+          assert resposta.status_code == 200
+          EOF
+      - name: Conferir a sintaxe dos scripts do pipeline
+        run: python -m py_compile devsecops/*.py
+      - name: Resumo
+        if: always()
+        run: |
+          {
+            echo "### 2. Testes do Python"
+            echo '```'
+            tail -3 teste-simulador.txt || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  qualidade-sonarqube:
+    name: 3. Qualidade do código (SonarQube)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Subir o SonarQube num container
+        run: |
+          docker run -d --name sonarqube -p 9000:9000 \
+            -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true "$SONARQUBE_IMAGE"
+          for _ in $(seq 1 60); do
+            STATUS=$(curl -s http://localhost:9000/api/system/status | python3 -c "import sys, json; print(json.load(sys.stdin).get('status', ''))" 2>/dev/null || true)
+            echo "SonarQube: ${STATUS:-subindo}"
+            [ "$STATUS" = "UP" ] && break
+            sleep 5
+          done
+          [ "$STATUS" = "UP" ]
+      - name: Chave do ensaio (criada aqui, morre com o job)
+        run: |
+          SENHA="Ci-$(openssl rand -hex 12)-Ok9"
+          echo "::add-mask::$SENHA"
+          curl -sf -u admin:admin -X POST "http://localhost:9000/api/users/change_password" \
+            --data-urlencode "login=admin" --data-urlencode "previousPassword=admin" \
+            --data-urlencode "password=$SENHA"
+          TOKEN=$(curl -sf -u "admin:$SENHA" -X POST "http://localhost:9000/api/user_tokens/generate" \
+            --data-urlencode "name=pipeline" | python3 -c "import sys, json; print(json.load(sys.stdin)['token'])")
+          echo "::add-mask::$TOKEN"
+          echo "SONAR_TOKEN=$TOKEN" >> "$GITHUB_ENV"
+      - name: Análise (sonar-scanner)
+        run: |
+          chmod -R a+rwX .
+          docker run --rm --network host \
+            -e SONAR_HOST_URL=http://localhost:9000 \
+            -e SONAR_TOKEN \
+            -v "$PWD:/usr/src" "$SCANNER_IMAGE"
+      - name: Resultado da análise
+        run: python3 devsecops/sonar_resumo.py | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Guardar o relatório
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-sonarqube
+          path: relatorios/
+
+  containers-trivy:
+    name: 4. Imagens Docker e vulnerabilidades (Trivy)
+    runs-on: ubuntu-latest
+    needs: [build-web, testes-python]
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build das imagens (docker compose)
+        run: |
+          docker compose -f docker-compose.yml build web api
+          docker image ls --format '{{.Repository}}:{{.Tag}}  {{.Size}}' | grep agrosmart
+      - name: Trivy nas imagens e nos Dockerfiles
+        run: |
+          mkdir -p relatorios "$HOME/.cache/trivy"
+          TRIVY="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $HOME/.cache/trivy:/root/.cache/trivy -v $PWD:/src -w /src $TRIVY_IMAGE"
+          $TRIVY image --scanners vuln --format json --output relatorios/trivy-imagem-web.json agrosmart-web:local
+          $TRIVY image --scanners vuln --format json --output relatorios/trivy-imagem-api.json agrosmart-api:local
+          $TRIVY config --format json --output relatorios/trivy-config.json .
+      - name: Resultado da análise
+        run: python3 devsecops/trivy_resumo.py relatorios/trivy-*.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Guardar os relatórios
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorios-trivy
+          path: relatorios/
+
+  execucao:
+    name: 5. Execução ponta a ponta
+    runs-on: ubuntu-latest
+    needs: build-web
+    env:
+      DB_PATH: ${{ github.workspace }}/data/agrosmart.db
+      MQTT_URL: mqtt://localhost:1883
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Broker MQTT (Mosquitto no Docker)
+        run: docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d mosquitto
+      - name: Banco (migração e dados das fases anteriores)
+        working-directory: web
+        run: |
+          mkdir -p ../data/logs
+          bun install --frozen-lockfile
+          bun run db:migrate
+          bun run seed
+      - name: Worker de ingestão e avaliador (em segundo plano)
+        working-directory: web
+        run: |
+          nohup ./node_modules/.bin/tsx scripts/worker.ts > ../data/logs/worker.log 2>&1 &
+          for _ in $(seq 1 30); do
+            grep -q "assinando" ../data/logs/worker.log && break
+            sleep 1
+          done
+          cat ../data/logs/worker.log
+          grep -q "assinando" ../data/logs/worker.log
+      - name: Simulador (48 h de histórico, cenário misto, semente fixa)
+        run: |
+          pip install -q -r simulator/requirements.txt
+          python simulator/simulator.py --backfill-hours 48 --count 0 --scenario misto --seed 2026 \
+            | tee data/logs/simulator.log
+      - name: Esperar o worker terminar de gravar
+        run: |
+          ANTES=-1
+          for _ in $(seq 1 60); do
+            AGORA=$(python3 -c "import sqlite3; d = sqlite3.connect('data/agrosmart.db'); print(d.execute('SELECT (SELECT COUNT(*) FROM sensor_readings) || \"/\" || (SELECT COUNT(*) FROM risk_evaluations)').fetchone()[0])")
+            echo "leituras/decisões: $AGORA"
+            [ "$AGORA" = "$ANTES" ] && break
+            ANTES=$AGORA
+            sleep 5
+          done
+      - name: Entrada virou saída?
+        run: python3 devsecops/execucao_resumo.py data/agrosmart.db --min-leituras 100 --min-decisoes 10 | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Guardar logs e banco da execução
+        if: always()
+        run: |
+          mkdir -p relatorios
+          cp data/logs/*.log relatorios/ 2>/dev/null || true
+          cp data/agrosmart.db relatorios/ 2>/dev/null || true
+          docker compose -f docker-compose.yml -f docker-compose.dev.yml logs mosquitto > relatorios/mosquitto.log 2>&1 || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: execucao-ponta-a-ponta
+          path: relatorios/

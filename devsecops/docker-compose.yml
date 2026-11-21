@@ -1,0 +1,34 @@
+# Laboratório DevSecOps do capítulo 10 da fase 7: Jenkins e SonarQube em containers.
+# Uso:  docker compose -f devsecops/docker-compose.yml up -d
+#       Jenkins em http://localhost:8080 (senha inicial: docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword)
+#       SonarQube em http://localhost:9000 (admin/admin no primeiro acesso, troca obrigatória)
+# O Trivy não precisa de serviço: o Jenkinsfile roda a imagem aquasec/trivy na hora.
+services:
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: jenkins
+    user: root
+    ports:
+      - "8080:8080"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks: [devsecops]
+
+  sonarqube:
+    image: sonarqube:10.6.0-community
+    container_name: sonarqube
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+    networks: [devsecops]
+
+networks:
+  devsecops: {}
+
+volumes:
+  jenkins_home:
+  sonarqube_data:

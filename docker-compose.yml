@@ -1,5 +1,6 @@
 services:
   web:
+    image: agrosmart-web:${AGROSMART_TAG:-local}
     build:
       context: ./web
     environment:
@@ -18,6 +19,7 @@ services:
     stop_grace_period: 20s
 
   api:
+    image: agrosmart-api:${AGROSMART_TAG:-local}
     build:
       context: ./api
     environment:
