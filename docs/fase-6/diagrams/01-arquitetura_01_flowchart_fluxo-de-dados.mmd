@@ -1,0 +1,54 @@
+flowchart TB
+  subgraph FONTES["1 · Fontes de dados"]
+    SIM["📡 Simulador de estações<br/>Python · 1 estação por talhão<br/>temp · UR do ar · umidade do solo · luz · chuva"]
+    USR["👤 Produtor / agrônomo<br/>foto da folha"]
+  end
+
+  subgraph INGESTAO["2 · Ingestão"]
+    MQ["📨 Broker MQTT<br/>Mosquitto"]
+    WK["📥 Worker de ingestão<br/>TypeScript · processo próprio<br/>valida, deduplica, grava"]
+    UP["📤 Upload de fotos<br/>Next.js /upload"]
+  end
+
+  subgraph PROC["3 · Processamento"]
+    API["👁️ API de visão<br/>FastAPI · HSV + VLM"]
+    AGG["🔄 Agregação da janela 24 h<br/>horas UR ≥ 90%, médias, tendência"]
+  end
+
+  subgraph AUTO["4 · Automação / decisão"]
+    EVAL["⏱️ Avaliador de risco · no worker<br/>a cada 1 h simulada por talhão · cooldown 6 h"]
+    JEV["⚡ Jev · System One<br/>OpenRouter Decisions API<br/>risco + ação"]
+    RULE["📏 Regras de limiar<br/>plano B"]
+    LLM["🧠 LLM · OpenRouter<br/>recomendação de manejo"]
+  end
+
+  DB[("💾 SQLite<br/>leituras · análises de foto<br/>decisões · recomendações")]
+
+  subgraph VIS["5 · Visualização"]
+    DASH["📊 Dashboard web · Next.js<br/>indicadores, séries, mapa, alertas"]
+  end
+
+  SIM -- "publish QoS 1<br/>agrosmart/{fazenda}/{talhão}/telemetria" --> MQ
+  MQ -- "subscribe agrosmart/+/+/telemetria" --> WK
+  WK -- "grava leitura" --> DB
+  USR -- foto --> UP
+  UP <-- "imagem → praga, severidade, % afetada" --> API
+  UP -- "grava análise" --> DB
+  DB -- "leituras 24 h" --> AGG
+  AGG -- agregados --> EVAL
+  EVAL -- "state" --> JEV
+  JEV -. "falha / timeout" .-> RULE
+  JEV -- "alto ou crítico" --> LLM
+  EVAL -- "decisão + decidido_por" --> DB
+  LLM -- "grava recomendação" --> DB
+  DB -- consulta --> DASH
+
+  classDef novo fill:#e6f4ea,stroke:#1e8e3e,stroke-width:2px,color:#0d3b1e
+  classDef existente fill:#eef1f5,stroke:#5f6b7a,stroke-width:2px,color:#1f2933
+  class SIM,MQ,WK,AGG,EVAL,JEV,RULE novo
+  class USR,UP,API,LLM,DB,DASH existente
+  style FONTES fill:#fafafa,stroke:#9aa5b1,color:#1f2933
+  style INGESTAO fill:#fafafa,stroke:#9aa5b1,color:#1f2933
+  style PROC fill:#fafafa,stroke:#9aa5b1,color:#1f2933
+  style AUTO fill:#fafafa,stroke:#9aa5b1,color:#1f2933
+  style VIS fill:#fafafa,stroke:#9aa5b1,color:#1f2933

@@ -1,0 +1,43 @@
+flowchart LR
+  BROWSER["👤 Navegador"]
+  SIM["📡 Simulador de estações<br/>fora do compose"]
+  OR["☁️ OpenRouter<br/>Jev · LLM · VLM"]
+
+  subgraph HOST["🖥️ Servidor da aplicação"]
+    CADDY["🛡️ caddy · container<br/>HTTPS, borda"]
+
+    subgraph CORE["Núcleo · monólito modular"]
+      WEB["⚙️ web · Next.js · 1 processo<br/>módulos em features/:<br/>upload · kpis · time-series · farm-heatmap<br/>recommendations · report · export"]
+    end
+
+    subgraph SAT["Serviços satélites"]
+      API["👁️ api · FastAPI · container<br/>sem estado"]
+      MQ["📨 mosquitto · container<br/>broker MQTT"]
+      WK["📥 worker · processo Node<br/>ingestão + avaliador horário<br/>reusa o schema do web"]
+    end
+
+    DB[("💾 SQLite · data/agrosmart.db<br/>banco compartilhado")]
+  end
+
+  BROWSER -- HTTPS --> CADDY
+  CADDY -- "proxy :3000" --> WEB
+  WEB -- "HTTP /analyze /classify" --> API
+  SIM -- "MQTT :1883" --> MQ
+  MQ -- "entrega telemetria" --> WK
+  WEB -- "lê e grava" --> DB
+  WK -- "grava leituras e decisões" --> DB
+  WK -- "Jev + LLM" --> OR
+  API -- "VLM" --> OR
+  WEB -- "LLM relatório" --> OR
+
+  classDef core fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px,color:#0b1f4d
+  classDef sat fill:#e6f4ea,stroke:#1e8e3e,stroke-width:2px,color:#0d3b1e
+  classDef infra fill:#eef1f5,stroke:#5f6b7a,stroke-width:2px,color:#1f2933
+  classDef db fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#451a03
+  class WEB core
+  class API,MQ,WK sat
+  class CADDY,BROWSER,SIM,OR infra
+  class DB db
+  style HOST fill:#fafafa,stroke:#9aa5b1,color:#1f2933
+  style CORE fill:#f5f9ff,stroke:#1d4ed8,color:#0b1f4d
+  style SAT fill:#f6fbf7,stroke:#1e8e3e,color:#0d3b1e

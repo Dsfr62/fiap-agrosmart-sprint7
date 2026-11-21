@@ -1,0 +1,31 @@
+.worktrees/
+node_modules
+.next
+.env
+.env.production
+.env*.local
+data/*
+!data/.gitkeep
+*.db
+*.db-wal
+*.db-shm
+*.tsbuildinfo
+web/node_modules
+web/.next
+api/__pycache__
+api/.venv
+skills-lock.json
+.agents
+.claude
+
+# Python bytecode
+api/**/__pycache__
+api/**/*.pyc
+.DS_Store
+
+# Simulator (Fase 6)
+simulator/.venv
+simulator/__pycache__
+
+# Zip de entrega (gerado por scripts/package-delivery.sh)
+entrega/
