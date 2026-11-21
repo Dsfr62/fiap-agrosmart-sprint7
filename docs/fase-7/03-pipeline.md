@@ -31,6 +31,8 @@ As etapas 1 e 2 correm em paralelo; a 4 só começa se as duas passarem.
 
 Na aba **Actions** do repositório, execução "DevSecOps". O **Summary** de cada execução mostra o resultado das cinco etapas em tabelas, e os relatórios completos ficam nos artefatos (`relatorio-sonarqube`, `relatorios-trivy`, `execucao-ponta-a-ponta`).
 
+Prints da execução final: [as cinco etapas](prints/pipeline-etapas.jpg), [o resumo do SonarQube](prints/pipeline-sonarqube.jpg) e [o resumo do Trivy](prints/pipeline-trivy.jpg). As telas fotografadas pelo próprio pipeline: [painel](prints/ambiente.png), [leituras](prints/ambiente-leituras.png), [decisões](prints/ambiente-decisoes.png), [monitoramento](prints/monitoramento.png) e [arquitetura](prints/arquitetura.png).
+
 ## Resultado medido (21/11/2026)
 
 Execução verde nas cinco etapas: https://github.com/Dsfr62/fiap-agrosmart-sprint7/actions/runs/44963438354
