@@ -11,8 +11,8 @@ A Sprint 6 deixou a plataforma funcionando. A Sprint 7 leva ela para perto de um
 | Entrega (peso) | Onde | Estado |
 |---|---|---|
 | Arquitetura final (15%) | `docs/fase-7/` (parte da Sprint 6 em [`docs/fase-6/01-arquitetura.md`](docs/fase-6/01-arquitetura.md)) | em construção |
-| Execução da plataforma (20%) | job "5. Execução ponta a ponta" do pipeline; prints em `docs/fase-7/prints/` | em construção |
-| Pipeline DevSecOps (20%) | [`.github/workflows/devsecops.yml`](.github/workflows/devsecops.yml), [`Jenkinsfile`](Jenkinsfile), [`docs/fase-7/03-pipeline.md`](docs/fase-7/03-pipeline.md) | em construção |
+| Execução da plataforma (20%) | job "5. Execução ponta a ponta" do pipeline (1.008 leituras, 84 decisões); prints em `docs/fase-7/prints/` | provada no pipeline; faltam os prints das telas |
+| Pipeline DevSecOps (20%) | [`.github/workflows/devsecops.yml`](.github/workflows/devsecops.yml), [`Jenkinsfile`](Jenkinsfile), [`docs/fase-7/03-pipeline.md`](docs/fase-7/03-pipeline.md) | **verde nas 5 etapas** ([execução](https://github.com/Dsfr62/fiap-agrosmart-sprint7/actions/runs/44932288058)) |
 | Monitoramento (10%) | `docs/fase-7/` | a fazer |
 | Análise de processo e demonstração (25%) | `docs/fase-7/` | a fazer |
 | Pitch e produto (10%) | `docs/fase-7/` | a fazer |

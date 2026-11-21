@@ -31,6 +31,25 @@ As etapas 1 e 2 correm em paralelo; a 4 só começa se as duas passarem.
 
 Na aba **Actions** do repositório, execução "DevSecOps". O **Summary** de cada execução mostra o resultado das cinco etapas em tabelas, e os relatórios completos ficam nos artefatos (`relatorio-sonarqube`, `relatorios-trivy`, `execucao-ponta-a-ponta`).
 
-## Resultado da primeira execução
+## Resultado medido (21/11/2026)
 
-A preencher com os números da execução da Sprint 7 (Quality Gate, vulnerabilidades por severidade, leituras e decisões).
+Execução verde nas cinco etapas: https://github.com/Dsfr62/fiap-agrosmart-sprint7/actions/runs/44932288058
+
+**Qualidade (SonarQube):** Quality Gate **OK**; 12.272 linhas analisadas; 0 vulnerabilidades; 4 bugs (nota C de confiabilidade); 4 pontos sensíveis de segurança; 87 code smells; 4,7% de linhas duplicadas; nota A de segurança e de manutenibilidade.
+
+**Vulnerabilidades (Trivy):**
+
+| Alvo | CRITICAL | HIGH | Com correção (CRITICAL/HIGH) |
+|---|---:|---:|---:|
+| Imagem da API (`agrosmart-api`, 866 MB) | 6 | 108 | 5/44 |
+| Imagem da web (`agrosmart-web`, 425 MB) | 6 | 63 | 5/26 |
+| Dockerfiles (configuração) | 0 falhas | | |
+
+**Execução ponta a ponta:** 1.008 leituras de 7 talhões (24 h de histórico e 12 h ao vivo) viraram **84 decisões**: 33 avisos, 24 irrigações, 7 chamadas ao agrônomo e 20 sem ação. Sem a chave da OpenRouter no pipeline, todas saíram pelas regras de limiar (plano B).
+
+**O que o pipeline achou e foi corrigido na primeira semana:**
+- 15 erros de lint no código herdado (formatação, imports sem uso, supressões que não suprimiam nada e a área de upload sem acesso pelo teclado).
+- A imagem Docker da web da Sprint 6 nunca montava: o `better-sqlite3` precisa de compilador e a base Bun Alpine não tem. A imagem passou para Node 22 Debian, roda sem root e ganhou healthcheck.
+- A execução mostrou que o worker só decide nas leituras ao vivo (o histórico só é gravado), e o ensaio passou a publicar as duas.
+
+**O que fica em aberto:** os 4 bugs do SonarQube e a regra do portão do Trivy (bloquear CRITICAL com correção publicada), depois de atualizar as imagens de base.
