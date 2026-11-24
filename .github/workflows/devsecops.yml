@@ -232,6 +232,17 @@ jobs:
           done
       - name: Entrada virou saída?
         run: python3 devsecops/execucao_resumo.py data/agrosmart.db --min-leituras 100 --min-decisoes 10 | tee -a "$GITHUB_STEP_SUMMARY"
+      # Os diagramas da arquitetura saem do fonte Mermaid (docs/fase-7/diagrams/*.mmd) a cada
+      # execução; se o Mermaid não baixar, o app usa as imagens que já estão no repositório.
+      - name: Diagramas da arquitetura (Mermaid, Chrome sem janela)
+        continue-on-error: true
+        run: |
+          bash docs/fase-7/diagrams/renderizar.sh
+          cp docs/fase-7/diagrams/01-fluxo-final.png web/public/arquitetura/fluxo-final.png
+          cp docs/fase-7/diagrams/02-implantacao-e-monitoramento.png web/public/arquitetura/implantacao.png
+          cp docs/fase-7/diagrams/03-pipeline-devsecops.png web/public/arquitetura/pipeline.png
+          mkdir -p relatorios/diagramas
+          cp docs/fase-7/diagrams/*.png relatorios/diagramas/
       - name: App web no ar (build de produção e servidor)
         working-directory: web
         env:

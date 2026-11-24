@@ -1,0 +1,76 @@
+flowchart TB
+  subgraph ENT["1. Entrada"]
+    SIM["Simulador de estações<br/>Python, uma estação por talhão<br/>temperatura, umidade do ar e do solo,<br/>luminosidade e chuva"]
+    USR["Produtor ou agrônomo<br/>foto da folha"]
+  end
+
+  subgraph ING["2. Ingestão"]
+    MQ["Broker MQTT<br/>Mosquitto 2.0.20"]
+    WK["Worker de ingestão<br/>TypeScript, processo próprio<br/>valida, descarta repetida, grava"]
+    UP["Upload de fotos<br/>Next.js, tela /upload"]
+  end
+
+  subgraph PROC["3. Processamento"]
+    API["API de visão<br/>FastAPI, HSV e VLM"]
+    AGG["Janela de 24 h por talhão<br/>médias, horas de folha úmida,<br/>solo seco, calor, tendência"]
+  end
+
+  subgraph AUTO["4. Automação e decisão"]
+    EVAL["Avaliador de risco, no worker<br/>uma vez por hora por talhão<br/>fila única"]
+    JEV["Jev, System One<br/>OpenRouter<br/>três riscos e a ação"]
+    RULE["Regras de limiar<br/>plano B"]
+    LLM["LLM<br/>recomendação de manejo"]
+  end
+
+  DB[("SQLite<br/>leituras, análises de foto,<br/>decisões e recomendações")]
+
+  subgraph SAI["5. Saída"]
+    DASH["Painel web, Next.js<br/>indicadores, séries, mapa,<br/>alertas e decisões"]
+    REL["Relatório em PDF<br/>e exportação CSV e JSON"]
+  end
+
+  subgraph OPS["6. Operação, novo na Sprint 7"]
+    EV[["Event log<br/>data/event-log.jsonl<br/>um caso por leitura"]]
+    ST[["Sinal de vida do worker<br/>data/worker-status.json<br/>a cada 5 s"]]
+    HM["GET /api/health<br/>GET /api/metrics"]
+    MON["Tela /monitoramento<br/>atualiza a cada 10 s"]
+    PM["pm4py<br/>processo, variantes e gargalos"]
+  end
+
+  SIM -- "MQTT QoS 1<br/>agrosmart/fazenda/talhão/telemetria" --> MQ
+  MQ -- "assina agrosmart/+/+/telemetria" --> WK
+  WK -- "grava a leitura" --> DB
+  USR -- "foto" --> UP
+  UP <-- "praga, severidade, % afetada" --> API
+  UP -- "grava a análise" --> DB
+  DB -- "últimas 24 h" --> AGG
+  AGG -- "agregados" --> EVAL
+  EVAL -- "estado do talhão" --> JEV
+  JEV -. "falha ou sem chave" .-> RULE
+  JEV -- "risco alto ou crítico,<br/>fora do intervalo de 6 h" --> LLM
+  EVAL -- "decisão e quem decidiu" --> DB
+  LLM -- "grava a recomendação" --> DB
+  DB -- "consulta" --> DASH
+  DB -- "consulta" --> REL
+
+  WK -. "cada passo da leitura" .-> EV
+  EVAL -. "fila, risco e ação" .-> EV
+  WK -. "contadores e fila" .-> ST
+  ST --> HM
+  DB -- "idade da última leitura e decisão" --> HM
+  MQ -. "conexão TCP 1883" .-> HM
+  HM --> MON
+  EV -- "CSV e XES" --> PM
+
+  classDef s7 fill:#e0ecff,stroke:#1d4ed8,stroke-width:2px,color:#0b1f4d
+  classDef s6 fill:#e6f4ea,stroke:#1e8e3e,stroke-width:2px,color:#0d3b1e
+  classDef antes fill:#eef1f5,stroke:#5f6b7a,stroke-width:2px,color:#1f2933
+  class EV,ST,HM,MON,PM s7
+  class SIM,MQ,WK,AGG,EVAL,JEV,RULE s6
+  class USR,UP,API,LLM,DB,DASH,REL antes
+  style ENT fill:#fafafa,stroke:#9aa5b1,color:#1f2933
+  style ING fill:#fafafa,stroke:#9aa5b1,color:#1f2933
+  style PROC fill:#fafafa,stroke:#9aa5b1,color:#1f2933
+  style AUTO fill:#fafafa,stroke:#9aa5b1,color:#1f2933
+  style SAI fill:#fafafa,stroke:#9aa5b1,color:#1f2933
+  style OPS fill:#f5f9ff,stroke:#1d4ed8,color:#0b1f4d

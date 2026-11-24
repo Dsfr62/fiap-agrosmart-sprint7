@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>AgroSmart, Sprint 7: entregáveis</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 16mm 15mm; }
+  :root { --verde: #1f6f4a; --verde-claro: #e8f3ec; --azul: #1d4ed8; --tinta: #1d2420; --suave: #5b6660; --linha: #d6ddd8; --pendente: #fff4c2; --pendente-borda: #c9a400; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; background: #fff; color: var(--tinta); font: 10.5pt/1.45 "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  h1 { font-size: 30pt; line-height: 1.1; margin: 0 0 6px; color: var(--verde); }
+  h2 { font-size: 17pt; margin: 0 0 4px; color: var(--verde); border-bottom: 2px solid var(--verde); padding-bottom: 4px; }
+  h2 .pts { float: right; font-weight: 400; color: var(--suave); font-size: 11pt; padding-top: 5px; }
+  h3 { font-size: 12pt; margin: 16px 0 4px; }
+  p { margin: 0 0 8px; }
+  ul, ol { margin: 0 0 8px; padding-left: 18px; }
+  li { margin-bottom: 3px; }
+  code, pre { font-family: Menlo, Consolas, monospace; font-size: 8.4pt; }
+  pre { background: #f4f6f5; border: 1px solid var(--linha); border-radius: 4px; padding: 8px 10px; white-space: pre-wrap; word-break: break-all; margin: 0 0 8px; }
+  table { width: 100%; border-collapse: collapse; margin: 4px 0 10px; font-size: 9pt; }
+  th, td { border: 1px solid var(--linha); padding: 4px 6px; text-align: left; vertical-align: top; }
+  th { background: var(--verde-claro); }
+  td.n, th.n { text-align: right; white-space: nowrap; }
+  .pagina { break-before: page; }
+  .sem-quebra { break-inside: avoid; }
+  figure { margin: 6px 0 12px; break-inside: avoid; }
+  figure img { max-width: 100%; max-height: 95mm; border: 1px solid var(--linha); border-radius: 4px; display: block; margin: 0 auto; }
+  figure.larga img { max-height: none; width: 100%; }
+  figure.alta img { max-height: 215mm; }
+  figcaption { font-size: 8.8pt; color: var(--suave); margin-top: 3px; }
+  .fonte { font-size: 8.8pt; color: var(--suave); }
+  .pendente-inline { background: var(--pendente); border: 1px dashed var(--pendente-borda); border-radius: 3px; padding: 1px 6px; font-weight: 600; }
+  .pendente { background: var(--pendente); border: 1.5px dashed var(--pendente-borda); border-radius: 4px; padding: 10px 12px; margin: 6px 0 12px; font-weight: 600; }
+  .capa { height: 255mm; display: flex; flex-direction: column; justify-content: space-between; }
+  .capa .topo { margin-top: 36mm; }
+  .capa .sub { font-size: 15pt; color: var(--suave); margin-bottom: 16mm; }
+  .capa dl { display: grid; grid-template-columns: 38mm 1fr; gap: 6px 10px; margin: 0; font-size: 11pt; }
+  .capa dt { color: var(--suave); }
+  .capa dd { margin: 0; }
+  .indice td:last-child { white-space: nowrap; }
+  .caixa { background: var(--verde-claro); border-radius: 4px; padding: 10px 12px; margin: 6px 0 12px; }
+  .telas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5mm; align-items: start; margin: 6px 0 12px; }
+  .telas figure { margin: 0; }
+  .telas figure img { max-height: none; width: 100%; }
+  .s7 { color: var(--azul); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- CAPA -->
+<section class="capa">
+  <div class="topo">
+    <h1>AgroSmart</h1>
+    <div class="sub">Sprint 7: a plataforma como produto</div>
+    <dl>
+      <dt>Trabalho</dt><dd>Atividade da Fase 7, AgroSmart, Sprint 7</dd>
+      <dt>Curso</dt><dd>Engenharia de Software, FIAP, turma 4ESOA, 2026</dd>
+      <dt>Integrantes</dt><dd>Bruno Reis Lago<br>Eduardo Sávio Fonseca Resende<br>Gustavo Vieira da Silva<br>João Guilherme Mazur Ferreira<br>Marina da Conceição Pereira<br>(RM de cada um no .txt da entrega)</dd>
+      <dt>Repositório</dt><dd>https://github.com/Dsfr62/fiap-agrosmart-sprint7</dd>
+      <dt>Pipeline</dt><dd>https://github.com/Dsfr62/fiap-agrosmart-sprint7/actions</dd>
+      <dt>Vídeo final</dt><dd><span class="pendente-inline">A ENTRAR: link do vídeo final (5 a 8 min)</span></dd>
+      <dt>Vídeo pitch</dt><dd><span class="pendente-inline">A ENTRAR: link do pitch (até 5 min)</span></dd>
+      <dt>Slides</dt><dd><span class="pendente-inline">A ENTRAR: link dos slides</span></dd>
+    </dl>
+  </div>
+  <table class="indice">
+    <tr><th>Parte</th><th>O que este PDF mostra</th><th class="n">Peso</th></tr>
+    <tr><td>1. Arquitetura final</td><td>o diagrama final, os componentes, a integração e o fluxo de dados</td><td class="n">15%</td></tr>
+    <tr><td>2. Execução da plataforma</td><td>como roda, exemplo de entrada e saída, números e prints</td><td class="n">20%</td></tr>
+    <tr><td>3. Pipeline DevSecOps</td><td>as cinco etapas, qualidade, vulnerabilidades e o que o pipeline achou</td><td class="n">20%</td></tr>
+    <tr><td>4. Monitoramento</td><td>o que é acompanhado, como cada peça é julgada e como acompanhar</td><td class="n">10%</td></tr>
+    <tr><td>5. Análise de processo e demonstração</td><td>o event log, o processo descoberto, variantes, gargalos, melhorias e o vídeo</td><td class="n">25%</td></tr>
+    <tr><td>6. Pitch e visão de produto</td><td>os slides e o vídeo pitch</td><td class="n">10%</td></tr>
+    <tr><td>Uso de IA, créditos e o que é simulado</td><td>o que foi usado para construir e quem fez o quê</td><td class="n"></td></tr>
+  </table>
+</section>
+
+<!-- 1. ARQUITETURA -->
+<section class="pagina">
+  <h2>1. Arquitetura final <span class="pts">15%</span></h2>
+  <p>A plataforma da Sprint 6 continua a mesma no centro: estações simuladas publicam leituras num broker MQTT, um worker grava e avalia cada talhão de hora em hora, e o painel mostra as decisões. A Sprint 7 acrescenta uma <strong>sexta camada, a de operação</strong>: o pipeline DevSecOps que prova cada versão, o monitoramento que diz se o sistema está de pé e o event log que permite estudar o processo com o pm4py.</p>
+  <figure class="alta">
+    <img src="../fase-7/diagrams/01-fluxo-final.png" alt="Diagrama final da arquitetura">
+    <figcaption>Diagrama final. Azul: novo na Sprint 7. Verde: criado na Sprint 6. Cinza: fases anteriores. Fonte editável em <code>docs/fase-7/diagrams/01-fluxo-final.mmd</code>.</figcaption>
+  </figure>
+</section>
+
+<section class="pagina">
+  <h3>Fluxo de dados: entrada, processamento e saída</h3>
+  <ol>
+    <li><strong>Entrada.</strong> Cada talhão tem uma estação simulada que mede temperatura, umidade do ar, umidade do solo e luminosidade, e marca a chuva. A cada 15 minutos simulados ela publica um JSON em <code>agrosmart/{fazenda}/{talhão}/telemetria</code> (QoS 1). O produtor também envia fotos de folhas pela tela <code>/upload</code>.</li>
+    <li><strong>Ingestão.</strong> O worker assina <code>agrosmart/+/+/telemetria</code>, valida a mensagem, descarta a leitura repetida pela chave (talhão, instante) e grava no SQLite.</li>
+    <li><strong>Processamento.</strong> Na primeira leitura ao vivo de cada nova hora, o talhão entra na fila do avaliador; as últimas 24 horas viram agregados (temperatura, umidade, horas de folha úmida, horas de solo seco, horas de calor, tendência e a última foto). A API de visão mede a área afetada das fotos (HSV) e identifica a praga.</li>
+    <li><strong>Automação.</strong> O Jev classifica três riscos (doença fúngica, falta de água e calor) e escolhe a ação. Se ele falhar ou não houver chave, as regras de limiar decidem (plano B). Com risco alto ou crítico, fora do intervalo de 6 horas, um LLM escreve a recomendação de manejo.</li>
+    <li><strong>Saída.</strong> O painel mostra indicadores, séries, mapa de calor, alertas e o histórico de decisões; gera relatório em PDF e exporta CSV e JSON.</li>
+    <li><strong>Operação (Sprint 7).</strong> O worker grava cada passo no event log e o próprio estado a cada 5 s; o <code>/api/health</code>, o <code>/api/metrics</code> e a tela <code>/monitoramento</code> leem esse estado; o pm4py desenha o processo real a partir do event log.</li>
+  </ol>
+
+  <h3>Componentes</h3>
+  <table>
+    <tr><th>Componente</th><th>Camada</th><th>Responsabilidade</th><th>Tecnologia</th><th>Origem</th></tr>
+    <tr><td>Simulador de estações</td><td>Entrada</td><td>leituras plausíveis por talhão, com relógio simulado</td><td>Python, paho-mqtt</td><td>Sprint 6</td></tr>
+    <tr><td>Upload de fotos</td><td>Entrada</td><td>recebe a foto e registra a auditoria</td><td>Next.js</td><td>fases 2 e 4</td></tr>
+    <tr><td>Broker MQTT</td><td>Ingestão</td><td>separa quem publica de quem consome</td><td>Mosquitto 2.0.20</td><td>Sprint 6</td></tr>
+    <tr><td>Worker de ingestão</td><td>Ingestão</td><td>valida, descarta repetida e grava; processo próprio</td><td>TypeScript (Node), Drizzle</td><td>Sprint 6</td></tr>
+    <tr><td>API de visão</td><td>Processamento</td><td>área afetada (HSV) e praga (modelo de visão)</td><td>FastAPI, OpenCV</td><td>fases 1 a 3</td></tr>
+    <tr><td>Avaliador de risco</td><td>Automação</td><td>fila por hora, janela de 24 h, chama o Jev e grava a decisão</td><td>TypeScript</td><td>Sprint 6</td></tr>
+    <tr><td>Jev e regras de limiar</td><td>Automação</td><td>três riscos e a ação; regras como plano B</td><td>OpenRouter; TypeScript</td><td>Sprint 6</td></tr>
+    <tr><td>LLM de recomendação</td><td>Automação</td><td>recomendação de manejo, sem produto nem dose</td><td>OpenRouter</td><td>fase 5</td></tr>
+    <tr><td>Banco de dados</td><td>Armazenamento</td><td>fazendas, talhões, fotos, leituras, decisões</td><td>SQLite (WAL), Drizzle</td><td>fase 2</td></tr>
+    <tr><td>Painel web e proxy</td><td>Saída</td><td>painéis, relatório, exportação; HTTPS na borda</td><td>Next.js 16, React 19; Caddy 2</td><td>fase 2</td></tr>
+    <tr><td class="s7">Event log</td><td>Operação</td><td>um evento por passo de cada leitura</td><td>JSONL gravado pelo worker</td><td class="s7">Sprint 7</td></tr>
+    <tr><td class="s7">Sinal de vida do worker</td><td>Operação</td><td>contadores, fila e erros a cada 5 s; linha [monitor] por minuto</td><td>JSON ao lado do banco</td><td class="s7">Sprint 7</td></tr>
+    <tr><td class="s7">Health, metrics e tela</td><td>Operação</td><td>estado de cada peça e indicadores</td><td>rotas e tela do Next.js</td><td class="s7">Sprint 7</td></tr>
+    <tr><td class="s7">Mineração de processos</td><td>Operação</td><td>processo, conformidade, variantes e gargalos</td><td>pm4py, pandas, Graphviz</td><td class="s7">Sprint 7</td></tr>
+    <tr><td class="s7">Pipeline DevSecOps</td><td>Operação</td><td>build, testes, qualidade, imagens, vulnerabilidades, execução</td><td>GitHub Actions, Jenkinsfile, SonarQube 10.6, Trivy 0.62</td><td class="s7">Sprint 7</td></tr>
+  </table>
+</section>
+
+<section class="pagina">
+  <h3>Integração entre os serviços</h3>
+  <table>
+    <tr><th>De</th><th>Para</th><th>Como</th><th>O que passa</th></tr>
+    <tr><td>Simulador</td><td>Broker</td><td>MQTT, porta 1883, QoS 1</td><td>um JSON por estação a cada 15 min simulados</td></tr>
+    <tr><td>Broker</td><td>Worker</td><td>assinatura <code>agrosmart/+/+/telemetria</code></td><td>a mesma mensagem, de todos os talhões</td></tr>
+    <tr><td>Worker</td><td>Banco</td><td>Drizzle sobre SQLite</td><td>leitura, decisão e recomendação</td></tr>
+    <tr><td>Worker</td><td>OpenRouter</td><td>HTTPS</td><td>estado do talhão ao Jev; pedido de recomendação ao LLM</td></tr>
+    <tr><td>App web</td><td>API de visão</td><td>HTTP <code>/analyze</code> e <code>/classify</code></td><td>a foto; volta praga, severidade e área afetada</td></tr>
+    <tr><td>Worker</td><td>App web</td><td>arquivos na pasta do banco</td><td><code>worker-status.json</code> e <code>event-log.jsonl</code></td></tr>
+    <tr><td>App web</td><td>Broker</td><td>conexão TCP, até 1 s</td><td>só para saber se o broker está de pé</td></tr>
+    <tr><td>Ferramenta externa</td><td>App web</td><td><code>GET /api/health</code>, <code>GET /api/metrics</code></td><td>estado e indicadores em JSON</td></tr>
+  </table>
+  <p>O worker e o app web não se chamam diretamente: dividem o banco e a pasta de dados, e um pode reiniciar sem derrubar o outro. O estilo é uma <strong>arquitetura baseada em serviços</strong>: um núcleo em monólito modular (o app web) cercado por serviços satélites (API de visão, broker e worker). O monitoramento entrou como módulo do núcleo, e não como serviço novo.</p>
+
+  <h3>Implantação e monitoramento</h3>
+  <figure class="larga">
+    <img src="../fase-7/diagrams/02-implantacao-e-monitoramento.png" alt="Diagrama de implantação">
+    <figcaption>Containers do <code>docker-compose.yml</code> (web, API, Mosquitto e Caddy, cada um com healthcheck), o worker como processo à parte e a pasta de dados compartilhada.</figcaption>
+  </figure>
+
+  <h3>Limites conhecidos</h3>
+  <ul>
+    <li>Sensores simulados, sem validação com produtor ou agrônomo; limiares de literatura.</li>
+    <li>Broker sem autenticação nem TLS (rede interna do Docker); sem login de usuário.</li>
+    <li>O worker fica fora do <code>docker-compose.yml</code>; em produção, ele viraria um serviço do compose com o volume <code>data</code>, para o monitoramento continuar lendo o sinal de vida.</li>
+    <li>Fila única do avaliador: é o gargalo medido na análise de processo (parte 5).</li>
+  </ul>
+</section>
+
+<!-- 2. EXECUÇÃO -->
+<section class="pagina">
+  <h2>2. Execução da plataforma <span class="pts">20%</span></h2>
+  <p><strong>Como roda.</strong> Na máquina de quem testa, <code>cd web &amp;&amp; bun install &amp;&amp; bun run demo</code> sobe o broker MQTT (Docker), o banco, o worker com o avaliador, o app web e o simulador, e abre o painel. No pipeline, a etapa 5 faz o mesmo a cada push, sem ninguém olhar: publica 24 horas de histórico e 12 horas ao vivo (aceleradas, com semente fixa), confere que as leituras viraram decisões, sobe o app de produção, guarda o <code>/api/health</code> e o <code>/api/metrics</code> e fotografa as telas.</p>
+
+  <div class="caixa"><strong>Resultado da execução</strong> (<a href="https://github.com/Dsfr62/fiap-agrosmart-sprint7/actions/runs/44963438354">execução 44963438354</a>): <strong>1.008 leituras</strong> de 7 talhões viraram <strong>84 decisões</strong>: 24 avisos ao produtor, 24 irrigações, 12 chamadas ao agrônomo e 24 sem ação. Sem a chave da OpenRouter no pipeline, todas saíram pelas regras de limiar (plano B). O <code>/api/health</code> respondeu <code>ok</code> nos cinco componentes.</div>
+
+  <h3>Exemplo de entrada</h3>
+  <p>Mensagem publicada no tópico <code>agrosmart/seed:fazenda-gama/seed:gama-talhao-2/telemetria</code>:</p>
+<pre>{"station_id": "est-gama-talhao-2", "ts": 1795347540000, "temperature_c": 23.5,
+ "air_humidity_pct": 73.0, "soil_moisture_pct": 31.5, "luminosity_lux": 36649, "event": null}</pre>
+
+  <h3>Exemplo de saída</h3>
+  <p>Decisão gravada para a Fazenda Beta, Talhão 1 (<a href="https://github.com/Dsfr62/fiap-agrosmart-sprint7/actions/runs/44963951873">execução 44963951873</a>):</p>
+  <table>
+    <tr><th style="width:32%">Campo</th><th>Valor</th></tr>
+    <tr><td>Janela avaliada</td><td>24 horas, 96 leituras</td></tr>
+    <tr><td>Temperatura</td><td>mínima 22,2 °C, média 29,7 °C, máxima 36,7 °C (9,8 horas acima de 32 °C)</td></tr>
+    <tr><td>Umidade do solo</td><td>média 15,4%, última 15%, 24 horas abaixo de 20%</td></tr>
+    <tr><td>Última foto do talhão</td><td>mancha parda, 27,59% da folha afetada</td></tr>
+    <tr><td>Riscos</td><td>doença fúngica <strong>baixo</strong>, falta de água <strong>crítico</strong>, calor <strong>crítico</strong></td></tr>
+    <tr><td>Ação e quem decidiu</td><td><strong>irrigar</strong>, pelas regras de limiar (plano B)</td></tr>
+  </table>
+  <p>O estado do worker no fim da execução (<code>worker-status.json</code>), lido pelo monitoramento:</p>
+<pre>{"brokerConnected": true, "messages": 1008, "stored": 1008, "duplicates": 0, "discarded": 0,
+ "evaluations": 84, "errors": 0, "queue": 0, "avgEvaluationMs": 28}</pre>
+
+  <div class="pendente">A ENTRAR: o retorno do Mazur sobre a demonstração local pelo README (rodou de primeira ou onde travou).</div>
+</section>
+
+<section class="pagina">
+  <h3>As telas, fotografadas pelo próprio pipeline</h3>
+  <figure class="larga">
+    <img src="../fase-7/prints/ambiente.png" alt="Painel do ambiente">
+    <figcaption>Painel do ambiente: indicadores, evolução no tempo e alertas.</figcaption>
+  </figure>
+  <div class="telas">
+    <figure><img src="../fase-7/prints/ambiente-leituras.png" alt="Leituras"><figcaption>Entrada: as leituras chegando pelo MQTT.</figcaption></figure>
+    <figure><img src="../fase-7/prints/ambiente-decisoes.png" alt="Decisões"><figcaption>Saída: o histórico de decisões, com os riscos, a ação e quem decidiu.</figcaption></figure>
+  </div>
+</section>
+
+<!-- 3. PIPELINE -->
+<section class="pagina">
+  <h2>3. Pipeline DevSecOps <span class="pts">20%</span></h2>
+  <p>A cada push na <code>main</code>, o GitHub Actions roda cinco etapas, na ordem que o capítulo 10 ensina. O mesmo pipeline está no <code>Jenkinsfile</code>, com o laboratório do capítulo (Jenkins e SonarQube) em <code>devsecops/docker-compose.yml</code>.</p>
+  <figure class="larga">
+    <img src="../fase-7/diagrams/03-pipeline-devsecops.png" alt="Diagrama do pipeline">
+    <figcaption>As cinco etapas, o portão do Trivy, os artefatos e o espelho no Jenkins.</figcaption>
+  </figure>
+  <p class="fonte">Arquivos de configuração: <code>.github/workflows/devsecops.yml</code>, <code>Jenkinsfile</code>, <code>web/Dockerfile</code>, <code>api/Dockerfile</code>, <code>docker-compose.yml</code>, <code>devsecops/docker-compose.yml</code>, <code>sonar-project.properties</code> e os resumos em <code>devsecops/*.py</code>.</p>
+  <table>
+    <tr><th>Etapa</th><th>O que faz</th><th>Ferramenta</th><th>Para se</th></tr>
+    <tr><td>1. Build e testes do app web</td><td>dependências pelo lockfile, lint, tipos, testes da automação, build de produção</td><td>Bun, Biome, TypeScript, Next.js</td><td>erro de lint, tipo, teste ou build</td></tr>
+    <tr><td>2. Testes do Python</td><td>testa o simulador; a API de visão sobe e responde ao <code>/health</code></td><td>pytest, FastAPI</td><td>teste vermelho ou API que não sobe</td></tr>
+    <tr><td>3. Qualidade do código</td><td>SonarQube num container dentro do job; analisa web, worker, API e simulador</td><td>SonarQube, sonar-scanner</td><td>a análise não terminar</td></tr>
+    <tr><td>4. Containers e vulnerabilidades</td><td>monta as imagens da web e da API e passa o Trivy nelas e nos Dockerfiles</td><td>Docker Compose, Trivy</td><td>imagem que não monta ou CRITICAL com correção</td></tr>
+    <tr><td>5. Execução ponta a ponta</td><td>sobe broker, banco, worker, simulador e app; confere entrada e saída; monitoramento, prints e pm4py</td><td>Mosquitto, Node, Python, Chrome</td><td>menos de 100 leituras ou de 10 decisões; health fora</td></tr>
+  </table>
+  <p><strong>Segurança dentro do pipeline:</strong> a senha e a chave do SonarQube nascem no job e morrem com ele; o pipeline só lê o repositório; versões de imagens fixas; lockfile congelado.</p>
+</section>
+
+<section class="pagina">
+  <h3>Resultado medido</h3>
+  <p><strong>Qualidade (SonarQube):</strong> Quality Gate <strong>OK</strong>; 13.247 linhas analisadas; <strong>0 bugs e 0 vulnerabilidades</strong>; nota <strong>A</strong> de confiabilidade, segurança e manutenibilidade; 87 code smells; 4,4% de linhas duplicadas; 4 pontos sensíveis para revisar (expressões regulares).</p>
+  <table>
+    <tr><th>Alvo (Trivy)</th><th class="n">CRITICAL antes</th><th class="n">CRITICAL depois</th><th class="n">CRITICAL com correção</th><th class="n">HIGH com correção</th></tr>
+    <tr><td>Imagem da API</td><td class="n">6</td><td class="n">1</td><td class="n"><strong>0</strong></td><td class="n">3</td></tr>
+    <tr><td>Imagem da web</td><td class="n">6</td><td class="n">1</td><td class="n"><strong>0</strong></td><td class="n"><strong>0</strong></td></tr>
+    <tr><td>Dockerfiles (configuração)</td><td class="n">0 falhas</td><td class="n">0 falhas</td><td class="n"></td><td class="n"></td></tr>
+  </table>
+  <p>A CRITICAL que sobra em cada imagem é do Debian (libxml2 e zlib) e ainda não tem correção; os 3 HIGH da API são do Starlette e pedem atualizar o FastAPI.</p>
+  <h3>O que o pipeline achou e foi corrigido</h3>
+  <table>
+    <tr><th>Achado</th><th>Etapa</th><th>Correção</th></tr>
+    <tr><td>15 erros de lint no código herdado</td><td>1</td><td>corrigidos; a área de upload abre com Enter e espaço</td></tr>
+    <tr><td>A imagem Docker da web da Sprint 6 nunca montava (o <code>better-sqlite3</code> precisa de compilador)</td><td>4</td><td>imagem em Node 22 Debian, sem root, com healthcheck</td></tr>
+    <tr><td>10 CRITICAL com correção (Pillow e Next.js)</td><td>4</td><td>Pillow 13.0.0, Next.js 16.4.6, Debian atualizado, npm fora da imagem final</td></tr>
+    <tr><td>HIGH com correção no python-multipart e no sharp</td><td>4</td><td>python-multipart 0.0.30 e sharp 0.35.5</td></tr>
+    <tr><td>O worker só decide nas leituras ao vivo</td><td>5</td><td>o ensaio publica 24 h de histórico e 12 h ao vivo</td></tr>
+  </table>
+  <div class="telas">
+    <figure><img src="../fase-7/prints/pipeline-etapas.jpg" alt="Etapas do pipeline"><figcaption>As cinco etapas verdes no GitHub Actions.</figcaption></figure>
+    <figure><img src="../fase-7/prints/pipeline-sonarqube.jpg" alt="Resumo do SonarQube"><figcaption>O resumo do SonarQube na execução.</figcaption></figure>
+    <figure><img src="../fase-7/prints/pipeline-trivy.jpg" alt="Resumo do Trivy"><figcaption>O resumo do Trivy e o portão.</figcaption></figure>
+  </div>
+</section>
+
+<!-- 4. MONITORAMENTO -->
+<section class="pagina">
+  <h2>4. Monitoramento e execução automatizada <span class="pts">10%</span></h2>
+  <p>O monitoramento responde a três perguntas de quem opera: <strong>está tudo de pé? os dados continuam chegando? a automação está decidindo?</strong></p>
+  <table>
+    <tr><th>Peça</th><th>O que mostra</th><th>Onde</th></tr>
+    <tr><td>Tela Monitoramento</td><td>estado de cada componente, indicadores e últimos eventos; atualiza a cada 10 s</td><td><code>/monitoramento</code></td></tr>
+    <tr><td><code>GET /api/health</code></td><td>o estado em JSON: banco, broker, worker, leituras e decisões</td><td>app web</td></tr>
+    <tr><td><code>GET /api/metrics</code></td><td>leituras, decisões por ação e por quem decidiu, taxa de plano B, alertas, contadores do worker</td><td>app web</td></tr>
+    <tr><td>Sinal de vida do worker</td><td>a cada 5 s: broker, mensagens, leituras, repetidas, descartadas, avaliações, fila, erros, tempo médio</td><td><code>data/worker-status.json</code></td></tr>
+    <tr><td>Log do worker</td><td>uma linha [monitor] por minuto e uma linha por decisão</td><td><code>data/demo-logs/worker.log</code></td></tr>
+    <tr><td>Healthcheck dos containers</td><td>a web chama o <code>/api/health</code>; a API, o <code>/health</code>; o Mosquitto responde a uma assinatura</td><td>Dockerfiles e compose</td></tr>
+    <tr><td>Pipeline</td><td>a cada push, sobe o sistema, guarda health e metrics e fotografa as telas</td><td>etapa 5</td></tr>
+  </table>
+  <table>
+    <tr><th>Componente</th><th>Funcionando</th><th>Atenção</th><th>Fora do ar</th></tr>
+    <tr><td>Banco</td><td>responde a uma consulta</td><td></td><td>não responde (health devolve 503)</td></tr>
+    <tr><td>Broker MQTT</td><td>aceita conexão em até 1 s</td><td></td><td>recusa ou não responde</td></tr>
+    <tr><td>Worker</td><td>sinal há até 30 s e conectado</td><td>sinal entre 30 s e 2 min, ou sem broker</td><td>sem sinal há mais de 2 min</td></tr>
+    <tr><td>Leituras</td><td>a última há até 15 min</td><td>parou há mais de 15 min</td><td>banco fora</td></tr>
+    <tr><td>Decisões</td><td>a última há até 2 h</td><td>parou há mais de 2 h</td><td>banco fora</td></tr>
+  </table>
+  <p>O estado geral é <strong>ok</strong> com tudo verde, <strong>degradado</strong> quando algo pede atenção e <strong>fora</strong> só quando o banco cai: o healthcheck não derruba o app porque outra peça parou.</p>
+  <p><strong>Como acompanhar:</strong> abrir <code>/monitoramento</code>; <code>curl</code> no <code>/api/health</code> e no <code>/api/metrics</code>; <code>tail -f data/demo-logs/worker.log</code>; a aba Actions do GitHub. Para testar o alarme: <code>docker stop</code> no Mosquitto; em uns 15 s a tela mostra o broker fora e o worker em atenção, e volta ao verde ao religar.</p>
+</section>
+
+<section class="pagina">
+  <figure class="larga">
+    <img src="../fase-7/prints/monitoramento.png" alt="Tela de monitoramento">
+    <figcaption>A tela de monitoramento na execução do pipeline: os cinco componentes verdes, os indicadores e os últimos eventos.</figcaption>
+  </figure>
+  <p>O <code>/api/health</code> da mesma execução:</p>
+<pre>{"status": "ok", "versao": "fase-7", "componentes": {
+  "banco":    {"estado": "ok", "detalhe": "SQLite respondendo"},
+  "broker":   {"estado": "ok", "detalhe": "Mosquitto atendendo em localhost:1883"},
+  "worker":   {"estado": "ok", "detalhe": "último sinal há 3 s, conectado ao broker, fila de 0 avaliação(ões)"},
+  "leituras": {"estado": "ok", "detalhe": "última leitura recebida há 29 s"},
+  "decisoes": {"estado": "ok", "detalhe": "última decisão há 30 s"}}}</pre>
+  <p class="fonte">Prometheus e Grafana fariam o mesmo papel com mais recursos, mas não fazem parte do conteúdo da fase; os indicadores já saem em JSON, prontos para uma ferramenta dessas.</p>
+</section>
+
+<!-- 5. PROCESSO -->
+<section class="pagina">
+  <h2>5. Análise de processo e demonstração final <span class="pts">25%</span></h2>
+  <p>A plataforma registra por onde cada leitura de sensor passa. Esse registro é o <strong>event log</strong>: com ele, a mineração de processos (capítulo 9, <strong>pm4py</strong>) descobre o fluxo real do sistema, mede onde ele espera e mostra os caminhos diferentes. Números da <a href="https://github.com/Dsfr62/fiap-agrosmart-sprint7/actions/runs/44963438354">execução 44963438354</a>; os sensores são simulados, o tempo de cada passo é medido de verdade no worker.</p>
+  <h3>O event log</h3>
+  <p>O worker grava um evento a cada passo (<code>data/event-log.jsonl</code>); <code>processo/exportar_event_log.py</code> gera CSV e XES. Caso = uma leitura (talhão e instante); atividade = o passo; instante em milissegundos; recurso = quem executou (broker, banco, avaliador, regras, Jev, LLM).</p>
+<pre>case_id,atividade,instante,recurso,origem,fila,risco_geral,acao
+seed:alfa-talhao-1@2026-11-22T00:02:00.000Z,Mensagem recebida,2026-11-21 23:47:47.080,broker MQTT,ao_vivo,,,
+seed:alfa-talhao-1@2026-11-22T00:02:00.000Z,Avaliação enfileirada,2026-11-21 23:47:47.082,avaliador,ao_vivo,1,,
+seed:alfa-talhao-1@2026-11-22T00:02:00.000Z,Avaliação iniciada,2026-11-21 23:47:47.083,avaliador,,1,,
+seed:alfa-talhao-1@2026-11-22T00:02:00.000Z,Risco avaliado pelas regras (plano B),2026-11-21 23:47:47.203,regras,,,high,
+seed:alfa-talhao-1@2026-11-22T00:02:00.000Z,Decisão: avisar o produtor,2026-11-21 23:47:47.204,avaliador,,,,notify</pre>
+  <p class="fonte">Recorte de <code>docs/fase-7/processo/exemplo-event-log.csv</code> (colunas e instantes resumidos). O log completo sai no artefato <code>execucao-ponta-a-ponta</code> de cada execução.</p>
+  <h3>O processo descoberto</h3>
+  <p><strong>2.352 eventos, 1.008 casos e 9 atividades.</strong> O Heuristics Miner desenhou o fluxo abaixo (o número em cada caixa é quantas vezes a atividade aconteceu). Na conformidade por token replay, <strong>fitness 1,0</strong>: 100% dos casos cabem no modelo.</p>
+  <figure>
+    <img src="../fase-7/processo/rede-heuristica.png" alt="Rede heurística do processo">
+    <figcaption>Rede heurística (<code>pm4py.discover_heuristics_net</code>). A rede de Petri está em <code>docs/fase-7/processo/rede-de-petri.png</code>.</figcaption>
+  </figure>
+</section>
+
+<section class="pagina">
+  <h3>Variantes: os caminhos de uma leitura</h3>
+  <table>
+    <tr><th class="n">Casos</th><th class="n">%</th><th class="n">Mediana</th><th>Caminho</th></tr>
+    <tr><td class="n">924</td><td class="n">91,7%</td><td class="n">1 ms</td><td>Mensagem recebida, Leitura gravada</td></tr>
+    <tr><td class="n">24</td><td class="n">2,4%</td><td class="n">84 ms</td><td>(...) Avaliação enfileirada, Avaliação iniciada, Risco avaliado pelas regras, Decisão: avisar o produtor</td></tr>
+    <tr><td class="n">24</td><td class="n">2,4%</td><td class="n">154 ms</td><td>(...) Risco avaliado pelas regras, Decisão: irrigar</td></tr>
+    <tr><td class="n">24</td><td class="n">2,4%</td><td class="n">193 ms</td><td>(...) Risco avaliado pelas regras, Decisão: nenhuma ação</td></tr>
+    <tr><td class="n">12</td><td class="n">1,2%</td><td class="n">60 ms</td><td>(...) Risco avaliado pelas regras, Decisão: chamar o agrônomo</td></tr>
+  </table>
+  <p>Só <strong>84 leituras (8,3%)</strong> dispararam uma avaliação: cada talhão é avaliado uma vez por hora, com a janela das últimas 24 horas, e o histórico só é gravado.</p>
+  <h3>Onde o processo espera (gargalos)</h3>
+  <figure>
+    <img src="../fase-7/processo/dfg-desempenho.png" alt="Mapa de desempenho">
+    <figcaption>Mapa de desempenho (<code>pm4py.discover_performance_dfg</code>): a transição mais lenta em vermelho.</figcaption>
+  </figure>
+  <table>
+    <tr><th>De</th><th>Para</th><th class="n">Vezes</th><th class="n">Média</th><th class="n">p95</th></tr>
+    <tr><td>Avaliação enfileirada</td><td>Avaliação iniciada</td><td class="n">84</td><td class="n"><strong>117 ms</strong></td><td class="n">302 ms</td></tr>
+    <tr><td>Avaliação iniciada</td><td>Risco avaliado pelas regras</td><td class="n">84</td><td class="n">32 ms</td><td class="n">75 ms</td></tr>
+    <tr><td>Mensagem recebida</td><td>Leitura gravada</td><td class="n">1.008</td><td class="n">1 ms</td><td class="n">1 ms</td></tr>
+  </table>
+  <p><strong>O gargalo é a fila do avaliador, não a avaliação.</strong> Uma avaliação leva 32 ms, mas espera 117 ms na fila (3,6 vezes mais), com até 6 esperando juntas: as avaliações correm uma por vez, e os 7 talhões viram a hora no mesmo instante.</p>
+</section>
+
+<section class="pagina">
+  <h3>Melhorias propostas</h3>
+  <ol>
+    <li><strong>Fila por talhão ou uma chamada só.</strong> Avaliar os talhões em paralelo, ou mandar os 7 numa chamada ao Jev, tira a espera; pesa mais com o Jev ligado, que responde pela rede em centenas de milissegundos.</li>
+    <li><strong>Avaliar antes quando um limite crítico é cruzado.</strong> Como 91,7% das leituras só são gravadas, uma mudança brusca (solo abaixo de 20%) pode esperar até a próxima hora para virar decisão.</li>
+    <li><strong>Acompanhar o plano B.</strong> Nesta execução, 100% das decisões saíram pelas regras; em produção, a taxa de plano B (já no <code>/api/metrics</code>) diz quando o Jev está fora.</li>
+    <li><strong>Testar os desvios.</strong> O log prevê leitura repetida, mensagem inválida e erro na avaliação, mas nenhum apareceu; um cenário com falhas injetadas mostraria se a conformidade continua alta.</li>
+  </ol>
+  <h3>Análise do grupo</h3>
+  <div class="pendente">A ENTRAR: a análise da Marina (gargalos, variações e oportunidades de melhoria sobre os números acima).</div>
+  <h3>Vídeo final (5 a 8 minutos)</h3>
+  <p>Demonstração da plataforma, explicação do fluxo, análise do processo e funcionamento completo, seguindo o roteiro de <code>docs/fase-7/06-roteiro-video.md</code>.</p>
+  <div class="pendente">A ENTRAR: link público do vídeo final.</div>
+</section>
+
+<!-- 6. PITCH -->
+<section class="pagina">
+  <h2>6. Pitch e visão de produto <span class="pts">10%</span></h2>
+  <p>O pitch, em vídeo de até 5 minutos com slides, apresenta o problema resolvido, a solução, o diferencial competitivo, o público-alvo e a proposta de valor.</p>
+  <div class="pendente">A ENTRAR: link do vídeo pitch, link dos slides e o resumo do pitch (problema, solução, diferencial, público-alvo e proposta de valor).</div>
+
+  <h2 style="margin-top:14mm">Uso de IA, créditos e o que é simulado</h2>
+  <ul>
+    <li><strong>Base:</strong> a plataforma da Sprint 6 do grupo (nota 10), com o código de Bruno Reis Lago, sob a licença MIT.</li>
+    <li><strong>Claude Code (Anthropic):</strong> apoio na Sprint 7 para escrever o pipeline, os scripts de resumo do SonarQube, do Trivy e da execução, o monitoramento, o event log, os scripts do pm4py, os diagramas e a documentação. Tudo foi revisado e rodado no GitHub Actions antes de entrar.</li>
+    <li><strong>Dentro do produto:</strong> o Jev e o LLM da recomendação são chamados pela OpenRouter; fazem parte da solução, não da escrita do código.</li>
+    <li><strong>O que é simulado:</strong> os sensores (simulador com semente fixa); não houve validação com produtores nem agrônomos; os números mostram o comportamento do sistema sobre dados simulados, não resultado em lavoura real.</li>
+  </ul>
+  <h3>Quem fez o quê</h3>
+  <table>
+    <tr><th>Integrante</th><th>Parte</th></tr>
+    <tr><td>Bruno Reis Lago</td><td>a plataforma da Sprint 6 (base deste trabalho)</td></tr>
+    <tr><td>Eduardo Sávio Fonseca Resende</td><td>pipeline DevSecOps, monitoramento, event log e pm4py, execução, arquitetura final e a montagem da entrega</td></tr>
+    <tr><td>Gustavo Vieira da Silva</td><td>vídeo final, vídeo pitch e slides</td></tr>
+    <tr><td>João Guilherme Mazur Ferreira</td><td>demonstração local pelo README</td></tr>
+    <tr><td>Marina da Conceição Pereira</td><td>análise do processo</td></tr>
+  </table>
+</section>
+
+</body>
+</html>

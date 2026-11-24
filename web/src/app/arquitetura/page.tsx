@@ -3,69 +3,68 @@ import { SidebarInset } from "@/components/ui/sidebar";
 
 const LAYERS = [
   {
-    title: "1 · Fontes de dados",
-    text: "Estações simuladas (uma por talhão) medem temperatura, umidade do ar, umidade do solo e luminosidade e simulam chuva. O produtor envia fotos de folhas.",
+    title: "1. Entrada",
+    text: "Estações simuladas (uma por talhão) medem temperatura, umidade do ar, umidade do solo e luminosidade e marcam a chuva. O produtor envia fotos de folhas.",
   },
   {
-    title: "2 · Ingestão",
-    text: "As estações publicam no broker MQTT (Mosquitto). O worker assina a telemetria, valida, descarta duplicatas e grava.",
+    title: "2. Ingestão",
+    text: "As estações publicam no broker MQTT (Mosquitto). O worker assina a telemetria, valida, descarta a leitura repetida e grava.",
   },
   {
-    title: "3 · Processamento",
-    text: "A API de visão mede a área afetada (HSV) e identifica a praga (VLM). A cada hora, as últimas 24 h de cada talhão viram indicadores, como as horas de folha úmida a 15–25 °C.",
+    title: "3. Processamento",
+    text: "A API de visão mede a área afetada (HSV) e identifica a praga. A cada hora, as últimas 24 h de cada talhão viram indicadores, como as horas de folha úmida.",
   },
   {
-    title: "4 · Automação",
-    text: "O Jev (System One) avalia três riscos (doença fúngica, estresse hídrico e térmico) e escolhe a ação, com probabilidades; regras de limiar assumem se ele falhar; um LLM escreve a recomendação de manejo quando o risco é alto.",
+    title: "4. Automação",
+    text: "O Jev avalia três riscos (doença fúngica, falta de água e calor) e escolhe a ação; regras de limiar assumem se ele falhar; um LLM escreve a recomendação quando o risco é alto.",
   },
   {
-    title: "5 · Visualização",
-    text: "Dashboards de fotos e de ambiente, leituras ao vivo e histórico de decisões, tudo no mesmo app.",
+    title: "5. Saída",
+    text: "Painéis de fotos e de ambiente, leituras ao vivo, histórico de decisões, relatório em PDF e exportação.",
+  },
+  {
+    title: "6. Operação",
+    text: "Novo na Sprint 7: pipeline DevSecOps a cada push, monitoramento (/api/health, /api/metrics e esta tela) e o event log que o pm4py analisa.",
   },
 ];
 
 const COMPONENTS = [
-  ["Simulador de estações", "Fonte", "Python + paho-mqtt", "Fase 6"],
-  ["Upload de fotos", "Fonte", "Next.js /upload", "Fases 2 e 4"],
-  ["Broker MQTT", "Ingestão", "Eclipse Mosquitto 2.0.20", "Fase 6"],
+  ["Simulador de estações", "Entrada", "Python + paho-mqtt", "Sprint 6"],
+  ["Upload de fotos", "Entrada", "Next.js /upload", "Fases 2 e 4"],
+  ["Broker MQTT", "Ingestão", "Eclipse Mosquitto 2.0.20", "Sprint 6"],
   [
-    "Worker de ingestão + avaliador",
-    "Ingestão / Automação",
+    "Worker de ingestão e avaliador",
+    "Ingestão e automação",
     "TypeScript (Node), Drizzle",
-    "Fase 6",
+    "Sprint 6",
   ],
+  ["API de visão", "Processamento", "FastAPI, OpenCV, VLM", "Fases 1 a 3"],
+  ["Jev (System One)", "Automação", "OpenRouter", "Sprint 6"],
+  ["Regras de limiar", "Automação", "TypeScript", "Sprint 6"],
+  ["LLM de recomendação", "Automação", "OpenRouter", "Fase 5"],
+  ["Banco de dados", "Armazenamento", "SQLite (WAL) + Drizzle", "Fase 2"],
+  ["Painel web", "Saída", "Next.js 16, React 19, Recharts", "Fase 2"],
+  ["Event log", "Operação", "JSONL gravado pelo worker", "Sprint 7"],
   [
-    "API de visão",
-    "Processamento",
-    "FastAPI, OpenCV, VLM via OpenRouter",
-    "Fases 1 a 3",
+    "Health, metrics e monitoramento",
+    "Operação",
+    "Rotas e tela do Next.js",
+    "Sprint 7",
   ],
+  ["Mineração de processos", "Operação", "pm4py", "Sprint 7"],
   [
-    "Jev (System One)",
-    "Automação",
-    "typesafe/jev-1.13 · OpenRouter Decisions API",
-    "Fase 6",
-  ],
-  ["Regras de limiar", "Automação", "TypeScript", "Fase 6"],
-  [
-    "LLM de recomendação",
-    "Automação",
-    "OpenRouter (chat)",
-    "Fase 5, estendido",
-  ],
-  [
-    "Banco de dados",
-    "Armazenamento",
-    "SQLite (WAL) + Drizzle",
-    "Fase 2, estendido",
-  ],
-  [
-    "Dashboard web",
-    "Visualização",
-    "Next.js 16, React 19, Recharts",
-    "Fase 2, estendido",
+    "Pipeline DevSecOps",
+    "Operação",
+    "GitHub Actions, Jenkins, SonarQube, Trivy",
+    "Sprint 7",
   ],
 ];
+
+const ORIGIN_CLASS: Record<string, string> = {
+  // Mesmo azul do diagrama (#1d4ed8): o tema não tem um token azul.
+  "Sprint 7": "py-1.5 font-semibold text-blue-700",
+  "Sprint 6": "py-1.5 font-semibold text-agro-success",
+};
 
 export default function ArchitecturePage() {
   return (
@@ -73,16 +72,17 @@ export default function ArchitecturePage() {
       <div className="flex flex-1 flex-col gap-6 p-4 pb-24 sm:p-6 md:pb-6">
         <header>
           <h1 className="text-3xl font-bold tracking-tight text-agro-ink">
-            Arquitetura
+            Arquitetura final
           </h1>
           <p className="mt-1 max-w-3xl text-sm text-agro-ink-2">
-            Arquitetura baseada em serviços: um núcleo em monólito modular (o
-            app web) cercado por serviços satélites (API de visão, broker MQTT e
-            worker), que compartilham o mesmo banco.
+            Um núcleo em monólito modular (o app web) cercado por serviços
+            satélites (API de visão, broker MQTT e worker), que dividem o mesmo
+            banco. A Sprint 7 acrescenta a camada de operação: pipeline,
+            monitoramento e event log.
           </p>
         </header>
 
-        <section className="grid gap-2 md:grid-cols-5">
+        <section className="grid gap-2 md:grid-cols-3 xl:grid-cols-6">
           {LAYERS.map((layer) => (
             <div
               key={layer.title}
@@ -101,24 +101,36 @@ export default function ArchitecturePage() {
         <section className="grid gap-4 xl:grid-cols-[3fr_4fr]">
           <figure className="rounded-2xl bg-agro-surface p-4 shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
             <img
-              src="/arquitetura/fluxo-de-dados.png"
-              alt="Fluxo de dados em cinco camadas, das estações e fotos ao dashboard"
+              src="/arquitetura/fluxo-final.png"
+              alt="Fluxo de dados em seis camadas, da entrada à saída, com a camada de operação"
               className="w-full"
             />
             <figcaption className="mt-2 text-xs text-agro-ink-3">
-              Fluxo de dados. Verde: componentes novos da Fase 6; cinza: fases
-              anteriores.
+              Fluxo de dados. Azul: novo na Sprint 7; verde: Sprint 6; cinza:
+              fases anteriores.
             </figcaption>
           </figure>
           <div className="flex flex-col gap-4">
             <figure className="rounded-2xl bg-agro-surface p-4 shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
               <img
                 src="/arquitetura/implantacao.png"
-                alt="Visão de implantação: núcleo modular, serviços satélites e banco compartilhado"
+                alt="Implantação: núcleo web, serviços satélites, pasta de dados compartilhada e healthchecks"
                 className="w-full"
               />
               <figcaption className="mt-2 text-xs text-agro-ink-3">
-                Implantação: o núcleo web e os satélites gravam no mesmo SQLite.
+                Implantação e monitoramento: o núcleo e os satélites dividem o
+                banco; o worker grava o sinal de vida ao lado dele.
+              </figcaption>
+            </figure>
+            <figure className="rounded-2xl bg-agro-surface p-4 shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
+              <img
+                src="/arquitetura/pipeline.png"
+                alt="Pipeline DevSecOps em cinco etapas, com o portão do Trivy e os artefatos"
+                className="w-full"
+              />
+              <figcaption className="mt-2 text-xs text-agro-ink-3">
+                Pipeline DevSecOps a cada push: build, testes, SonarQube,
+                imagens com Trivy e execução ponta a ponta.
               </figcaption>
             </figure>
             <div className="overflow-x-auto rounded-2xl bg-agro-surface p-4 shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
@@ -139,9 +151,7 @@ export default function ArchitecturePage() {
                       <td className="py-1.5 pr-3">{tech}</td>
                       <td
                         className={
-                          origin === "Fase 6"
-                            ? "py-1.5 font-semibold text-agro-success"
-                            : "py-1.5 text-agro-ink-2"
+                          ORIGIN_CLASS[origin] ?? "py-1.5 text-agro-ink-2"
                         }
                       >
                         {origin}
@@ -162,16 +172,23 @@ export default function ArchitecturePage() {
           >
             leituras ao vivo
           </Link>
-          {" → "}
+          {", "}
           <Link
             href="/ambiente/decisoes"
             className="font-semibold text-agro-success"
           >
-            decisões do Jev
+            decisões
           </Link>
-          {" → "}
+          {", "}
           <Link href="/ambiente" className="font-semibold text-agro-success">
-            dashboard Ambiente
+            painel do ambiente
+          </Link>
+          {" e "}
+          <Link
+            href="/monitoramento"
+            className="font-semibold text-agro-success"
+          >
+            monitoramento
           </Link>
           .
         </p>

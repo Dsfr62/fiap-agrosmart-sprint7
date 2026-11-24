@@ -10,7 +10,7 @@ A Sprint 6 deixou a plataforma funcionando. A Sprint 7 leva ela para perto de um
 
 | Entrega (peso) | Onde | Estado |
 |---|---|---|
-| Arquitetura final (15%) | `docs/fase-7/` (parte da Sprint 6 em [`docs/fase-6/01-arquitetura.md`](docs/fase-6/01-arquitetura.md)) | em construção |
+| Arquitetura final (15%) | [`docs/fase-7/01-arquitetura-final.md`](docs/fase-7/01-arquitetura-final.md): diagrama final, componentes, integração e fluxo de dados com exemplo de entrada e saída; tela `/arquitetura` | **pronta** |
 | Execução da plataforma (20%) | etapa 5 do pipeline (1.008 leituras viraram 84 decisões); [prints das telas](docs/fase-7/prints/) | **pronta** |
 | Pipeline DevSecOps (20%) | [`.github/workflows/devsecops.yml`](.github/workflows/devsecops.yml), [`Jenkinsfile`](Jenkinsfile), [`docs/fase-7/03-pipeline.md`](docs/fase-7/03-pipeline.md) | **verde nas 5 etapas** ([execução](https://github.com/Dsfr62/fiap-agrosmart-sprint7/actions/runs/44963438354)) |
 | Monitoramento (10%) | tela `/monitoramento`, `/api/health`, `/api/metrics`; [`docs/fase-7/04-monitoramento.md`](docs/fase-7/04-monitoramento.md) | **pronto** |

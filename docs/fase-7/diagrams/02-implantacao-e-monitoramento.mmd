@@ -1,0 +1,50 @@
+flowchart LR
+  BROWSER["Navegador<br/>painel e /monitoramento"]
+  SIM["Simulador de estações<br/>fora do compose"]
+  OR["OpenRouter<br/>Jev, LLM e VLM"]
+
+  subgraph HOST["Servidor da aplicação, docker-compose.yml"]
+    CADDY["caddy, container<br/>HTTPS e cabeçalhos de segurança"]
+
+    subgraph CORE["Núcleo, monólito modular"]
+      WEB["web, container Node 22<br/>Next.js: painel, relatório,<br/>/monitoramento, /api/health, /api/metrics<br/>healthcheck: o próprio /api/health"]
+    end
+
+    subgraph SAT["Serviços satélites"]
+      API["api, container<br/>FastAPI sem estado<br/>healthcheck: /health"]
+      MQ["mosquitto, container<br/>broker MQTT<br/>healthcheck: assina $SYS"]
+      WK["worker, processo Node<br/>ingestão e avaliador horário<br/>linha [monitor] por minuto"]
+    end
+
+    subgraph DADOS["Pasta de dados, volume data"]
+      DB[("agrosmart.db<br/>SQLite compartilhado")]
+      FILES[["worker-status.json<br/>event-log.jsonl"]]
+    end
+  end
+
+  BROWSER -- "HTTPS" --> CADDY
+  CADDY -- "proxy :3000" --> WEB
+  WEB -- "HTTP /analyze e /classify" --> API
+  SIM -- "MQTT :1883" --> MQ
+  MQ -- "entrega a telemetria" --> WK
+  WEB -- "lê e grava" --> DB
+  WK -- "grava leituras e decisões" --> DB
+  WK -- "sinal de vida e eventos" --> FILES
+  WEB -- "lê o estado do worker" --> FILES
+  WEB -. "confere a porta 1883" .-> MQ
+  WK -- "Jev e LLM" --> OR
+  API -- "VLM" --> OR
+  WEB -- "LLM do relatório" --> OR
+
+  classDef core fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px,color:#0b1f4d
+  classDef sat fill:#e6f4ea,stroke:#1e8e3e,stroke-width:2px,color:#0d3b1e
+  classDef infra fill:#eef1f5,stroke:#5f6b7a,stroke-width:2px,color:#1f2933
+  classDef db fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#451a03
+  class WEB core
+  class API,MQ,WK sat
+  class CADDY,BROWSER,SIM,OR infra
+  class DB,FILES db
+  style HOST fill:#fafafa,stroke:#9aa5b1,color:#1f2933
+  style CORE fill:#f5f9ff,stroke:#1d4ed8,color:#0b1f4d
+  style SAT fill:#f6fbf7,stroke:#1e8e3e,color:#0d3b1e
+  style DADOS fill:#fffbeb,stroke:#b45309,color:#451a03
