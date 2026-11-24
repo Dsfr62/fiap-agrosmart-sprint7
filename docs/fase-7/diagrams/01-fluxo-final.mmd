@@ -1,21 +1,21 @@
 flowchart TB
-  subgraph ENT["1. Entrada"]
+  subgraph ENT["Camada 1: entrada"]
     SIM["Simulador de estações<br/>Python, uma estação por talhão<br/>temperatura, umidade do ar e do solo,<br/>luminosidade e chuva"]
     USR["Produtor ou agrônomo<br/>foto da folha"]
   end
 
-  subgraph ING["2. Ingestão"]
+  subgraph ING["Camada 2: ingestão"]
     MQ["Broker MQTT<br/>Mosquitto 2.0.20"]
     WK["Worker de ingestão<br/>TypeScript, processo próprio<br/>valida, descarta repetida, grava"]
     UP["Upload de fotos<br/>Next.js, tela /upload"]
   end
 
-  subgraph PROC["3. Processamento"]
+  subgraph PROC["Camada 3: processamento"]
     API["API de visão<br/>FastAPI, HSV e VLM"]
     AGG["Janela de 24 h por talhão<br/>médias, horas de folha úmida,<br/>solo seco, calor, tendência"]
   end
 
-  subgraph AUTO["4. Automação e decisão"]
+  subgraph AUTO["Camada 4: automação e decisão"]
     EVAL["Avaliador de risco, no worker<br/>uma vez por hora por talhão<br/>fila única"]
     JEV["Jev, System One<br/>OpenRouter<br/>três riscos e a ação"]
     RULE["Regras de limiar<br/>plano B"]
@@ -24,12 +24,12 @@ flowchart TB
 
   DB[("SQLite<br/>leituras, análises de foto,<br/>decisões e recomendações")]
 
-  subgraph SAI["5. Saída"]
+  subgraph SAI["Camada 5: saída"]
     DASH["Painel web, Next.js<br/>indicadores, séries, mapa,<br/>alertas e decisões"]
     REL["Relatório em PDF<br/>e exportação CSV e JSON"]
   end
 
-  subgraph OPS["6. Operação, novo na Sprint 7"]
+  subgraph OPS["Camada 6: operação, nova na Sprint 7"]
     EV[["Event log<br/>data/event-log.jsonl<br/>um caso por leitura"]]
     ST[["Sinal de vida do worker<br/>data/worker-status.json<br/>a cada 5 s"]]
     HM["GET /api/health<br/>GET /api/metrics"]
@@ -57,8 +57,6 @@ flowchart TB
   EVAL -. "fila, risco e ação" .-> EV
   WK -. "contadores e fila" .-> ST
   ST --> HM
-  DB -- "idade da última leitura e decisão" --> HM
-  MQ -. "conexão TCP 1883" .-> HM
   HM --> MON
   EV -- "CSV e XES" --> PM
 

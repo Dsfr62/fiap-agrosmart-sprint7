@@ -2,12 +2,12 @@ flowchart LR
   DEV["Push ou pull request<br/>na main do GitHub"]
 
   subgraph GHA["GitHub Actions, .github/workflows/devsecops.yml"]
-    J1["1. Build e testes do app web<br/>Bun, Biome, TypeScript,<br/>testes da automação, next build"]
-    J2["2. Testes do Python<br/>pytest do simulador,<br/>/health da API de visão"]
-    J3["3. Qualidade do código<br/>SonarQube num container<br/>e sonar-scanner"]
-    J4["4. Imagens e vulnerabilidades<br/>docker compose build<br/>Trivy nas imagens e nos Dockerfiles"]
+    J1["Etapa 1: Build e testes do app web<br/>Bun, Biome, TypeScript,<br/>testes da automação, next build"]
+    J2["Etapa 2: Testes do Python<br/>pytest do simulador,<br/>/health da API de visão"]
+    J3["Etapa 3: Qualidade do código<br/>SonarQube num container<br/>e sonar-scanner"]
+    J4["Etapa 4: Imagens e vulnerabilidades<br/>docker compose build<br/>Trivy nas imagens e nos Dockerfiles"]
     GATE{"CRITICAL com<br/>correção publicada?"}
-    J5["5. Execução ponta a ponta<br/>Mosquitto, banco, worker, simulador,<br/>app de produção, health, metrics,<br/>prints e pm4py"]
+    J5["Etapa 5: Execução ponta a ponta<br/>Mosquitto, banco, worker, simulador,<br/>app de produção, health, metrics,<br/>prints e pm4py"]
   end
 
   subgraph ART["Artefatos de cada execução"]
@@ -40,5 +40,7 @@ flowchart LR
   class A1,A2,A3 art
   class DEV,JEN infra
   class STOP stop
+  classDef gate fill:#fff4c2,stroke:#c9a400,stroke-width:2px,color:#3d3200
+  class GATE gate
   style GHA fill:#f5f9ff,stroke:#1d4ed8,color:#0b1f4d
   style ART fill:#fffbeb,stroke:#b45309,color:#451a03

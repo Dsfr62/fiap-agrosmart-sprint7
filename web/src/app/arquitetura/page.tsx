@@ -100,34 +100,52 @@ export default function ArchitecturePage() {
 
         <section className="grid gap-4 xl:grid-cols-[3fr_4fr]">
           <figure className="rounded-2xl bg-agro-surface p-4 shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
-            <img
-              src="/arquitetura/fluxo-final.png"
-              alt="Fluxo de dados em seis camadas, da entrada à saída, com a camada de operação"
-              className="w-full"
-            />
+            <a
+              href="/arquitetura/fluxo-final.png"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img
+                src="/arquitetura/fluxo-final.png"
+                alt="Fluxo de dados em seis camadas, da entrada à saída, com a camada de operação"
+                className="w-full"
+              />
+            </a>
             <figcaption className="mt-2 text-xs text-agro-ink-3">
               Fluxo de dados. Azul: novo na Sprint 7; verde: Sprint 6; cinza:
-              fases anteriores.
+              fases anteriores. Clique numa imagem para ampliar.
             </figcaption>
           </figure>
           <div className="flex flex-col gap-4">
             <figure className="rounded-2xl bg-agro-surface p-4 shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
-              <img
-                src="/arquitetura/implantacao.png"
-                alt="Implantação: núcleo web, serviços satélites, pasta de dados compartilhada e healthchecks"
-                className="w-full"
-              />
+              <a
+                href="/arquitetura/implantacao.png"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  src="/arquitetura/implantacao.png"
+                  alt="Implantação: núcleo web, serviços satélites, pasta de dados compartilhada e healthchecks"
+                  className="w-full"
+                />
+              </a>
               <figcaption className="mt-2 text-xs text-agro-ink-3">
                 Implantação e monitoramento: o núcleo e os satélites dividem o
                 banco; o worker grava o sinal de vida ao lado dele.
               </figcaption>
             </figure>
             <figure className="rounded-2xl bg-agro-surface p-4 shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
-              <img
-                src="/arquitetura/pipeline.png"
-                alt="Pipeline DevSecOps em cinco etapas, com o portão do Trivy e os artefatos"
-                className="w-full"
-              />
+              <a
+                href="/arquitetura/pipeline.png"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  src="/arquitetura/pipeline.png"
+                  alt="Pipeline DevSecOps em cinco etapas, com o portão do Trivy e os artefatos"
+                  className="w-full"
+                />
+              </a>
               <figcaption className="mt-2 text-xs text-agro-ink-3">
                 Pipeline DevSecOps a cada push: build, testes, SonarQube,
                 imagens com Trivy e execução ponta a ponta.
