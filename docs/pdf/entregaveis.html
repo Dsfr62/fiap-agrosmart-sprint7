@@ -175,7 +175,8 @@
 <pre>{"brokerConnected": true, "messages": 1008, "stored": 1008, "duplicates": 0, "discarded": 0,
  "evaluations": 84, "errors": 0, "queue": 0, "avgEvaluationMs": 28}</pre>
 
-  <div class="pendente">A ENTRAR: o retorno do Mazur sobre a demonstração local pelo README (rodou de primeira ou onde travou).</div>
+  <h3>Demonstração fora do pipeline</h3>
+  <p>A demo também foi rodada pelo README numa máquina do grupo, no Windows com Git Bash (sem WSL2), em 24/11/2026. Na primeira tentativa, travou na conferência de requisitos: o <code>demo.sh</code> escolhe o <code>python3</code> primeiro, e no Windows esse comando é o atalho da Microsoft Store, que não roda Python. Com um Python de verdade no PATH, subiu tudo: as cinco etapas, as telas e o <code>/api/health</code> responderam, e as primeiras decisões saíram em uns 2 minutos, pelas regras (sem a chave da OpenRouter). Os prints estão em <code>docs/fase-7/prints/demo-local/</code>.</p>
 </section>
 
 <section class="pagina">
@@ -331,8 +332,35 @@ seed:alfa-talhao-1@2026-11-22T00:02:00.000Z,Decisão: avisar o produtor,2026-11-
     <li><strong>Acompanhar o plano B.</strong> Nesta execução, 100% das decisões saíram pelas regras; em produção, a taxa de plano B (já no <code>/api/metrics</code>) diz quando o Jev está fora.</li>
     <li><strong>Testar os desvios.</strong> O log prevê leitura repetida, mensagem inválida e erro na avaliação, mas nenhum apareceu; um cenário com falhas injetadas mostraria se a conformidade continua alta.</li>
   </ol>
+</section>
+
+<section class="pagina">
   <h3>Análise do grupo</h3>
-  <div class="pendente">A ENTRAR: a análise da Marina (gargalos, variações e oportunidades de melhoria sobre os números acima).</div>
+  <p>Para conferir a leitura fora do pipeline, a demo rodou numa máquina do grupo (cenário misto, 48 horas de histórico e umas 6 horas ao vivo) e o event log passou pelos mesmos scripts: <strong>3.006 eventos, 1.433 casos, as mesmas 5 variantes e fitness 1,0</strong>.</p>
+  <p><strong>Gargalo: a espera cresce com a posição na fila.</strong> Os 7 talhões entram na fila em 18 ms, na virada da hora, e cada um espera os anteriores. É um gargalo de desenho, não de carga: o worker encadeia as avaliações numa fila de atendente único.</p>
+  <table>
+    <tr><th>Posição na fila</th><th class="n">1ª</th><th class="n">2ª</th><th class="n">3ª</th><th class="n">4ª</th><th class="n">5ª</th><th class="n">6ª</th><th class="n">7ª</th></tr>
+    <tr><td>Espera média (demo local)</td><td class="n">2 ms</td><td class="n">130 ms</td><td class="n">191 ms</td><td class="n">250 ms</td><td class="n">341 ms</td><td class="n">531 ms</td><td class="n">578 ms</td></tr>
+  </table>
+  <p><strong>Teste com a OpenRouter lenta.</strong> O tempo de cada avaliação depende da rede: a chamada ao Jev espera até 10 s e, com risco alto, a recomendação da IA roda dentro da mesma avaliação e espera até mais 30 s. Para medir o pior caso, a demo rodou com <code>OPENROUTER_BASE_URL</code> apontando para um servidor local que aceita a conexão e não responde:</p>
+  <table>
+    <tr><th></th><th class="n">OpenRouter respondendo</th><th class="n">OpenRouter lenta</th></tr>
+    <tr><td>Avaliação (risco baixo ou moderado / alto)</td><td class="n">85 ms</td><td class="n"><strong>10 s / 40 s</strong></td></tr>
+    <tr><td>Primeira rodada dos 7 talhões</td><td class="n">menos de 1,2 s</td><td class="n"><strong>3 min 40 s</strong></td></tr>
+    <tr><td>Espera do 7º talhão</td><td class="n">578 ms</td><td class="n"><strong>210 s</strong></td></tr>
+    <tr><td>Fila do avaliador</td><td class="n">até 7</td><td class="n"><strong>74 e subindo</strong></td></tr>
+  </table>
+  <p>Nenhuma avaliação falhou (todas terminaram pelo plano B), então o problema não aparece nas variantes, só no tempo. E o monitoramento seguiu em "Tudo funcionando" com 74 avaliações na fila.</p>
+  <p><strong>Variações.</strong> Entre as leituras ao vivo, 1 em cada 4 dispara avaliação nas duas execuções, porque a estação manda a cada 15 minutos e só a primeira da hora é avaliada. As 4 variantes de decisão só mudam no último passo, que leva 1 ms. "Nenhuma ação" parece a mais lenta porque cai nos talhões do fim da fila, cuja ordem é fixa, e não porque decidir seja mais difícil. Os desvios previstos no log não apareceram, então o fitness 1,0 mostra coerência, não robustez.</p>
+  <p><strong>Melhorias, por prioridade:</strong></p>
+  <ol>
+    <li>avaliar os talhões em paralelo, com limite;</li>
+    <li>não chamar o Jev sem chave e cortar o circuito quando ele falha, tirando a recomendação da fila;</li>
+    <li>alerta de fila no monitoramento (por exemplo, mais de 7 avaliações esperando ou espera acima de 1 minuto);</li>
+    <li>avaliar na hora quando uma leitura cruza um limite crítico;</li>
+    <li>um cenário de falhas no pipeline, como o teste da OpenRouter lenta.</li>
+  </ol>
+  <p class="fonte">Detalhe e tabelas completas em <code>docs/fase-7/05-processo.md</code>; prints do teste em <code>docs/fase-7/prints/demo-local/</code>.</p>
   <h3>Vídeo final (5 a 8 minutos)</h3>
   <p>Demonstração da plataforma, explicação do fluxo, análise do processo e funcionamento completo, seguindo o roteiro de <code>docs/fase-7/06-roteiro-video.md</code>.</p>
   <div class="pendente">A ENTRAR: link público do vídeo final.</div>
