@@ -14,8 +14,8 @@ A Sprint 6 deixou a plataforma funcionando. A Sprint 7 leva ela para perto de um
 | Execução da plataforma (20%) | etapa 5 do pipeline (1.008 leituras viraram 84 decisões); [prints das telas](docs/fase-7/prints/) | **pronta** |
 | Pipeline DevSecOps (20%) | [`.github/workflows/devsecops.yml`](.github/workflows/devsecops.yml), [`Jenkinsfile`](Jenkinsfile), [`docs/fase-7/03-pipeline.md`](docs/fase-7/03-pipeline.md) | **verde nas 5 etapas** ([execução](https://github.com/Dsfr62/fiap-agrosmart-sprint7/actions/runs/44963438354)) |
 | Monitoramento (10%) | tela `/monitoramento`, `/api/health`, `/api/metrics`; [`docs/fase-7/04-monitoramento.md`](docs/fase-7/04-monitoramento.md) | **pronto** |
-| Análise de processo e demonstração (25%) | event log do worker e pm4py em [`processo/`](processo/); [`docs/fase-7/05-processo.md`](docs/fase-7/05-processo.md); roteiro do vídeo em [`docs/fase-7/06-roteiro-video.md`](docs/fase-7/06-roteiro-video.md) | event log e análise do grupo prontos; falta o vídeo |
-| Pitch e produto (10%) | slides e vídeo de até 5 min | a fazer |
+| Análise de processo e demonstração (25%) | event log do worker e pm4py em [`processo/`](processo/); [`docs/fase-7/05-processo.md`](docs/fase-7/05-processo.md); roteiro do vídeo em [`docs/fase-7/06-roteiro-video.md`](docs/fase-7/06-roteiro-video.md) | **pronto**; vídeo final: https://www.youtube.com/watch?v=u82E7J-J8Gs |
+| Pitch e produto (10%) | vídeo pitch: https://www.youtube.com/watch?v=9u3a6himaBk | **pronto** |
 
 ## Como rodar a demonstração
 
